@@ -22,16 +22,19 @@
    ============================================ */
 .scene-selector-modal {
   width: 90%;
-  max-width: 900px;
+  max-width: 1000px;
   max-height: 85vh;
   
-  background: rgba(15, 25, 45, 0.95);
-  border: 1px solid rgba(0, 255, 255, 0.2);
-  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.60);
+  border: 1px solid rgba(0, 217, 255, 0.15);
+  border-radius: 20px;
   
   padding: 2rem;
   
-  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.50),
+    0 0 0 1px rgba(0, 217, 255, 0.05) inset;
   
   overflow-y: auto;
 }
@@ -44,34 +47,59 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.scene-selector-header h2 {
+/* MODAL TITLE - Gradient matching Landing */
+.modal-title {
   font-size: 1.75rem;
-  font-weight: 600;
-  color: #ffffff;
+  font-weight: 700;
   margin: 0;
+  letter-spacing: -0.01em;
+  
+  /* Gradient cyan → violet → pink (matching LYRA HUB) */
+  background: linear-gradient(90deg, 
+    #00d9ff 0%, 
+    #00b8ff 15%,
+    #0099ff 25%,
+    #6366f1 40%,
+    #8b5cf6 55%,
+    #a855f7 70%,
+    #ec4899 85%,
+    #f472b6 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 .close-btn {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 217, 255, 0.25);
+  color: rgba(255, 255, 255, 0.70);
   
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   
-  font-size: 1.25rem;
+  font-size: 1.5rem;
+  line-height: 1;
   cursor: pointer;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   transition: all 0.2s ease;
 }
 
 .close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 217, 255, 0.10);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(0, 217, 255, 0.40);
+  transform: rotate(90deg);
 }
 
 /* ============================================
@@ -79,7 +107,7 @@
    ============================================ */
 .scene-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 1.5rem;
 }
 
@@ -87,9 +115,9 @@
    SCENE CARD
    ============================================ */
 .scene-card {
-  background: rgba(20, 30, 50, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
+  background: rgba(20, 30, 50, 0.60);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 14px;
   
   overflow: hidden;
   
@@ -97,10 +125,27 @@
   cursor: pointer;
 }
 
-.scene-card:hover {
-  border-color: rgba(0, 255, 255, 0.4);
-  transform: translateY(-4px);
-  box-shadow: 0 8px 30px rgba(0, 255, 255, 0.2);
+.scene-card:hover:not(.disabled) {
+  border-color: rgba(0, 217, 255, 0.40);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(0, 217, 255, 0.15);
+}
+
+/* Active state */
+.scene-card.active {
+  border-color: rgba(0, 217, 255, 0.50);
+  background: rgba(20, 30, 50, 0.80);
+}
+
+/* Disabled state */
+.scene-card.disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.scene-card.disabled:hover {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.10);
 }
 
 /* ============================================
@@ -108,28 +153,45 @@
    ============================================ */
 .scene-thumbnail {
   width: 100%;
-  height: 160px;
+  height: 180px;
   
   position: relative;
   
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* BADGES */
 .scene-badge {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
+  top: 0.875rem;
+  right: 0.875rem;
   
-  padding: 0.35rem 0.75rem;
+  padding: 0.4rem 0.875rem;
+  border-radius: 8px;
   
-  background: rgba(0, 255, 255, 0.15);
-  border: 1px solid rgba(0, 255, 255, 0.3);
-  border-radius: 6px;
-  
-  color: #00ffff;
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* Active badge (cyan) */
+.scene-badge.active {
+  background: rgba(0, 217, 255, 0.15);
+  border: 1px solid rgba(0, 217, 255, 0.40);
+  color: rgba(0, 255, 255, 0.95);
+  box-shadow: 0 0 15px rgba(0, 217, 255, 0.20);
+}
+
+/* Coming Soon badge (pink) */
+.scene-badge.coming-soon {
+  background: rgba(236, 72, 153, 0.12);
+  border: 1px solid rgba(236, 72, 153, 0.30);
+  color: rgba(255, 200, 230, 0.95);
 }
 
 /* ============================================
@@ -139,32 +201,34 @@
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .scene-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.95);
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
 .scene-subtitle {
   font-size: 0.875rem;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.55);
   margin: 0;
-  font-weight: 300;
+  font-weight: 400;
 }
 
+/* ENTER BUTTON */
 .scene-enter-btn {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   padding: 0.75rem;
   
   background: transparent;
-  border: 1px solid #00ffff;
-  border-radius: 6px;
+  border: 1px solid rgba(0, 217, 255, 0.30);
+  border-radius: 8px;
   
-  color: #00ffff;
+  color: rgba(0, 255, 255, 0.95);
   font-size: 0.875rem;
   font-weight: 600;
   
@@ -172,9 +236,22 @@
   transition: all 0.3s ease;
 }
 
-.scene-enter-btn:hover {
-  background: rgba(0, 255, 255, 0.1);
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+.scene-enter-btn:hover:not(:disabled) {
+  background: rgba(0, 217, 255, 0.10);
+  border-color: rgba(0, 217, 255, 0.50);
+  box-shadow: 0 0 20px rgba(0, 217, 255, 0.15);
+}
+
+.scene-enter-btn:disabled {
+  border-color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.40);
+  cursor: not-allowed;
+}
+
+/* Active card button */
+.scene-card.active .scene-enter-btn {
+  background: rgba(0, 217, 255, 0.12);
+  border-color: rgba(0, 217, 255, 0.40);
 }
 
 /* ============================================
@@ -186,7 +263,22 @@
     padding: 1.5rem;
   }
   
+  .modal-title {
+    font-size: 1.5rem;
+  }
+  
   .scene-cards-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .scene-thumbnail {
+    height: 150px;
+  }
+}
+
+/* Touch feedback (Quest) */
+@media (hover: none) {
+  .scene-card:active:not(.disabled) {
+    transform: scale(0.98);
   }
 }

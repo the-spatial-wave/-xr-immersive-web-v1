@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { useAppStore } from '../../store/appStore'
-import { SceneCard } from './SceneCard'
 import './SceneSelector.css'
 
 export function SceneSelector() {
+  const currentSceneId = useAppStore(s => s.currentSceneId)
   const setScene = useAppStore(s => s.setScene)
   const setMode = useAppStore(s => s.setMode)
   const toggleSceneSelector = useAppStore(s => s.toggleSceneSelector)
@@ -21,7 +21,9 @@ export function SceneSelector() {
   }, [toggleSceneSelector])
   
   // Handle scene selection
-  function handleSceneEnter(sceneId: 'scene1' | 'scene2' | 'scene3') {
+  function handleSceneEnter(sceneId: 'scene1' | 'scene2' | 'scene3', available: boolean) {
+    if (!available) return
+    
     setScene(sceneId)
     setMode('explore')
     toggleSceneSelector()
@@ -31,43 +33,90 @@ export function SceneSelector() {
   return (
     <div className="scene-selector-overlay" onClick={toggleSceneSelector}>
       <div className="scene-selector-modal" onClick={(e) => e.stopPropagation()}>
+        
         {/* Header */}
         <div className="scene-selector-header">
-          <h2>Seleziona Scena</h2>
+          <h2 className="modal-title">Seleziona Scena</h2>
           <button 
             className="close-btn"
             onClick={toggleSceneSelector}
             aria-label="Close"
           >
-            ✕
+            ×
           </button>
         </div>
         
         {/* Scene Cards Grid */}
         <div className="scene-cards-grid">
-          <SceneCard
-            title="Scene 1 —"
-            subtitle="Game Changer (Intro)"
-            badge="Desktop + VR"
-            thumbnail="/placeholder-scene1.jpg"
-            onEnter={() => handleSceneEnter('scene1')}
-          />
           
-          <SceneCard
-            title="Scene 2 —"
-            subtitle="XR Reset (Cards)"
-            badge="VR only"
-            thumbnail="/placeholder-scene2.jpg"
-            onEnter={() => handleSceneEnter('scene2')}
-          />
+          {/* SCENE 1 - THIS IS THE GAME CHANGER */}
+          <div 
+            className={`scene-card ${currentSceneId === 'scene1' ? 'active' : ''}`}
+            onClick={() => handleSceneEnter('scene1', true)}
+          >
+            <div className="scene-thumbnail">
+              {currentSceneId === 'scene1' && (
+                <div className="scene-badge active">IN CORSO</div>
+              )}
+            </div>
+            
+            <div className="scene-content">
+              <h3 className="scene-title">THIS IS THE GAME CHANGER</h3>
+              <p className="scene-subtitle">
+                Incontra Lyra, il tuo assistente AI, in uno spazio immersivo 
+                dove esplorazione e intelligenza artificiale si incontrano
+              </p>
+              
+              <button className="scene-enter-btn">
+                {currentSceneId === 'scene1' ? 'Attiva' : 'Enter'}
+              </button>
+            </div>
+          </div>
           
-          <SceneCard
-            title="Scene 3 —"
-            subtitle="Showroom (Controllo)"
-            badge="Desktop + VR"
-            thumbnail="/placeholder-scene3.jpg"
-            onEnter={() => handleSceneEnter('scene3')}
-          />
+          {/* SCENE 2 - XR RESET */}
+          <div 
+            className="scene-card disabled"
+            onClick={() => handleSceneEnter('scene2', false)}
+          >
+            <div className="scene-thumbnail">
+              <div className="scene-badge coming-soon">COMING SOON</div>
+            </div>
+            
+            <div className="scene-content">
+              <h3 className="scene-title">XR RESET</h3>
+              <p className="scene-subtitle">
+                Quiz interattivo con card dinamiche per testare 
+                le tue conoscenze in un ambiente immersivo
+              </p>
+              
+              <button className="scene-enter-btn" disabled>
+                Prossimamente
+              </button>
+            </div>
+          </div>
+          
+          {/* SCENE 3 - SHOWROOM */}
+          <div 
+            className="scene-card disabled"
+            onClick={() => handleSceneEnter('scene3', false)}
+          >
+            <div className="scene-thumbnail">
+              <div className="scene-badge coming-soon">COMING SOON</div>
+            </div>
+            
+            <div className="scene-content">
+              <h3 className="scene-title">SHOWROOM</h3>
+              <p className="scene-subtitle">
+                Esplora progetti, creazioni e portfolio in uno 
+                spazio dedicato con controlli interattivi
+              </p>
+              
+              <button className="scene-enter-btn" disabled>
+                Prossimamente
+              </button>
+            </div>
+          </div>
+          
         </div>
       </div>
     </div>

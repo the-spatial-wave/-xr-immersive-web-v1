@@ -1,39 +1,24 @@
+import { useAppStore } from '../../store/appStore'
 import './ControlsOverlay.css'
 
 export function ControlsOverlay() {
+  const setMode = useAppStore(s => s.setMode)
+  const toggleSceneSelector = useAppStore(s => s.toggleSceneSelector)
+
   return (
     <div className="controls-overlay">
-      <div className="control-item">
-        <span className="control-icon">🖱️</span>
-        <span className="control-text">
-          <strong>Drag</strong> = Rotate
-        </span>
+      <div className="controls-top">
+        <button className="nav-btn nav-back" onClick={() => setMode('landing')}>
+          ← Home
+        </button>
+
+        <button className="nav-btn nav-scenes" onClick={toggleSceneSelector}>
+          Scegli scena
+        </button>
       </div>
-      
-      <div className="control-separator">•</div>
-      
-      <div className="control-item">
-        <span className="control-icon">🔄</span>
-        <span className="control-text">
-          <strong>Wheel</strong> = Zoom
-        </span>
-      </div>
-      
-      <div className="control-separator">•</div>
-      
-      <div className="control-item">
-        <span className="control-icon">⌨️</span>
-        <span className="control-text">
-          <strong>Space</strong> = Toggle modes
-        </span>
-      </div>
-      
-      <div className="control-separator">•</div>
-      
-      <div className="control-item">
-        <span className="control-text">
-          <strong>1 · 2 · 3</strong> = Choose scene
-        </span>
+
+      <div className="controls-bottom">
+        <p className="hint">Trascina per ruotare • Pinch/Scroll per zoom</p>
       </div>
     </div>
   )

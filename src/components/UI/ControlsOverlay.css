@@ -1,76 +1,73 @@
-/* ============================================
-   CONTROLS OVERLAY
-   ============================================ */
-.controls-overlay {
+.controls-overlay{
   position: fixed;
-  bottom: 2rem;
+  inset: 0;
+  z-index: 120;
+  pointer-events: none;
+  font-family: Inter, system-ui, sans-serif;
+}
+
+/* top bar */
+.controls-top{
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  right: 18px;
+  display:flex;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: auto;
+}
+
+.nav-btn{
+  min-height: 44px;
+  padding: 12px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(10,14,26,0.55);
+  backdrop-filter: blur(12px);
+  color: rgba(255,255,255,0.78);
+  font-weight: 650;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .16s ease, background .16s ease, border-color .16s ease;
+}
+
+.nav-btn:hover{
+  transform: translateY(-2px);
+  background: rgba(10,14,26,0.68);
+  border-color: rgba(255,255,255,0.18);
+}
+
+.nav-scenes{
+  border-color: rgba(168,117,255,0.28);
+  background: rgba(168,117,255,0.10);
+  color: rgba(255,255,255,0.90);
+}
+.nav-scenes:hover{
+  border-color: rgba(168,117,255,0.45);
+  background: rgba(168,117,255,0.16);
+}
+
+.controls-bottom{
+  position: absolute;
+  bottom: 18px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 50;
-  
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  
-  padding: 1rem 2rem;
-  
-  /* Glass morphism */
-  background: rgba(10, 20, 40, 0.7);
+  pointer-events: none;
+}
+
+.hint{
+  margin: 0;
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  background: rgba(10,14,26,0.35);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 8px 12px;
+  border-radius: 999px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  
-  /* Subtle glow */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* ============================================
-   CONTROL ITEMS
-   ============================================ */
-.control-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.control-icon {
-  font-size: 1.2rem;
-  opacity: 0.8;
-}
-
-.control-text {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.875rem;
-  font-weight: 300;
-  letter-spacing: 0.03em;
-}
-
-.control-text strong {
-  color: rgba(255, 255, 255, 0.9);
-  font-weight: 500;
-}
-
-/* ============================================
-   SEPARATOR
-   ============================================ */
-.control-separator {
-  color: rgba(255, 255, 255, 0.2);
-  font-size: 0.875rem;
-  margin: 0 0.25rem;
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 768px) {
-  .controls-overlay {
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    bottom: 1rem;
-  }
-  
-  .control-separator {
-    display: none;
-  }
+/* touch */
+@media (hover: none){
+  .nav-btn:active{ transform: scale(0.98); }
 }
