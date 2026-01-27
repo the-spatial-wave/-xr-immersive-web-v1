@@ -1,5 +1,5 @@
 // Scene 1 - This is the Game Changer
-// V2.0.0 - XR Support Final
+// V2.1.0 - VR Feature Flag Architecture
 
 import { Canvas } from '@react-three/fiber';
 import { 
@@ -16,7 +16,8 @@ import CustomHDREnvironment from '../CustomHDREnvironment';
 import { useAppStore } from '../../store/appStore';
 
 interface Scene1Props {
-  xrStore: XRStore
+  xrStore: XRStore;
+  vrEnabled?: boolean;
 }
 
 function Scene1Lighting() {
@@ -71,27 +72,94 @@ function Scene1Ground() {
   );
 }
 
-function SceneDebug() {
+function SceneDebug({ vrEnabled }: { vrEnabled: boolean }) {
   useEffect(() => {
-    console.log('📍 SCENE 1 V2.0.0 LOADED (XR Ready)');
-  }, []);
+    console.log(`📍 SCENE 1 V2.1.0 LOADED (VR: ${vrEnabled ? 'ENABLED ✅' : 'DISABLED 🚫'})`);
+  }, [vrEnabled]);
   return null;
+}
+
+/**
+ * Scene1Content - Contenuto riutilizzabile della scena
+ * Può essere wrappato con <XR> o renderizzato direttamente
+ */
+function Scene1Content({ 
+  platformHeight, 
+  lyraHeightOffset 
+}: { 
+  platformHeight: number; 
+  lyraHeightOffset: number;
+}) {
+  return (
+    <>
+      <PerspectiveCamera makeDefault position={[0, 1.65, 4.2]} fov={48} />
+      <Scene1Lighting />
+      <CustomHDREnvironment 
+        path="/textures/skybox/lyra-hub-night.hdr"
+        background={true}
+        blur={0.9}
+        intensity={1.0}
+        offsetY={-0.2}
+      />
+      <fog attach="fog" args={['#0a0e1a', 4, 12]} />
+      <Suspense fallback={null}>
+        <group position={[0, platformHeight + lyraHeightOffset, 0]}>
+          <LyraCharacter floating={true} bodyLookAt={true} />
+        </group>
+      </Suspense>
+      <Scene1Ground />
+      <ContactShadows
+        position={[0, 0.505, 0]}
+        opacity={0.4}
+        scale={10}
+        blur={3.5}
+        far={3}
+        color="#000000"
+      />
+      <OrbitControls
+        enableZoom={true}
+        minDistance={2.5}
+        maxDistance={8}
+        enablePan={false}
+        enableRotate={true}
+        minPolarAngle={Math.PI / 3}
+        maxPolarAngle={Math.PI / 2.2}
+        target={[0, 1.4, 0]}
+        enableDamping={true}
+        dampingFactor={0.06}
+      />
+    </>
+  );
 }
 
 export default function Scene1(props: Scene1Props) {
   const mode = useAppStore(s => s.mode);
   const platformHeight = 0.5;
   const lyraHeightOffset = 0.22;
+  const vrEnabled = props.vrEnabled ?? false;
   
+  // 🚧 VR GUARD - Blocca mode 'xr' quando VR disabled
   useEffect(() => {
-    if (mode === 'xr') {
-      console.log('🥽 Auto-entering VR...');
+    if (!vrEnabled && mode === 'xr') {
+      console.warn('⚠️ Scene1: VR entry blocked - Feature disabled');
+      // Ritorna a explore mode
+      useAppStore.getState().setMode('explore');
+    }
+  }, [mode, vrEnabled]);
+  
+  // 🥽 VR AUTO-ENTER - Attivo solo quando VR enabled
+  useEffect(() => {
+    if (vrEnabled && mode === 'xr') {
+      console.log('🥽 Scene1: Auto-entering VR mode...');
+      
       props.xrStore.enterVR().catch((err) => {
-        console.error('❌ VR failed:', err);
+        console.error('❌ Scene1: VR entry failed:', err);
         alert('VR not available. Make sure you have a VR headset connected.');
+        // Fallback a explore mode in caso di errore
+        useAppStore.getState().setMode('explore');
       });
     }
-  }, [mode, props.xrStore]);
+  }, [mode, vrEnabled, props.xrStore]);
   
   return (
     <div style={{ 
@@ -108,45 +176,26 @@ export default function Scene1(props: Scene1Props) {
           toneMappingExposure: 0.75
         }}
       >
-        <XR store={props.xrStore}>
-          <PerspectiveCamera makeDefault position={[0, 1.65, 4.2]} fov={48} />
-          <Scene1Lighting />
-          <SceneDebug />
-          <CustomHDREnvironment 
-            path="/textures/skybox/lyra-hub-night.hdr"
-            background={true}
-            blur={0.9}
-            intensity={1.0}
-            offsetY={-0.2}
+        <SceneDebug vrEnabled={vrEnabled} />
+        
+        {/* 
+          🔀 CONDITIONAL XR WRAPPER
+          - Se VR enabled: Scene wrappata in <XR>
+          - Se VR disabled: Scene renderizzata direttamente (no WebXR)
+        */}
+        {vrEnabled ? (
+          <XR store={props.xrStore}>
+            <Scene1Content 
+              platformHeight={platformHeight} 
+              lyraHeightOffset={lyraHeightOffset} 
+            />
+          </XR>
+        ) : (
+          <Scene1Content 
+            platformHeight={platformHeight} 
+            lyraHeightOffset={lyraHeightOffset} 
           />
-          <fog attach="fog" args={['#0a0e1a', 4, 12]} />
-          <Suspense fallback={null}>
-            <group position={[0, platformHeight + lyraHeightOffset, 0]}>
-              <LyraCharacter floating={true} bodyLookAt={true} />
-            </group>
-          </Suspense>
-          <Scene1Ground />
-          <ContactShadows
-            position={[0, 0.505, 0]}
-            opacity={0.4}
-            scale={10}
-            blur={3.5}
-            far={3}
-            color="#000000"
-          />
-          <OrbitControls
-            enableZoom={true}
-            minDistance={2.5}
-            maxDistance={8}
-            enablePan={false}
-            enableRotate={true}
-            minPolarAngle={Math.PI / 3}
-            maxPolarAngle={Math.PI / 2.2}
-            target={[0, 1.4, 0]}
-            enableDamping={true}
-            dampingFactor={0.06}
-          />
-        </XR>
+        )}
       </Canvas>
     </div>
   );

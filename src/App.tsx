@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useAppStore } from './store/appStore'
 import { useDesktopControls } from './hooks/useDesktopControls'
 import { Landing } from './components/Landing/Landing'
@@ -7,6 +8,7 @@ import Scene1 from './components/scenes/Scene1'
 import Scene2 from './components/scenes/Scene2'
 import Scene3 from './components/scenes/Scene3'
 import { xrStore } from './store/xrStore'
+import { FEATURES } from './config/features'
 import './App.css'
 
 function App() {
@@ -16,13 +18,37 @@ function App() {
   
   useDesktopControls()
   
+  // 🚧 VR MASTER GUARD
+  // Blocca qualsiasi tentativo di entrare in VR quando feature è disabled
+  useEffect(() => {
+    if (!FEATURES.VR_ENABLED && mode === 'xr') {
+      console.warn('⚠️ VR Mode blocked - Feature disabled in config/features.ts')
+      
+      alert(
+        "🚧 VR Mode Coming Soon!\n\n" +
+        "Stiamo lavorando a un'esperienza VR completa.\n" +
+        "Per ora LYRA Hub è disponibile in Desktop mode.\n\n" +
+        "Stay tuned! 🚀"
+      )
+      
+      // Force return to explore mode
+      useAppStore.getState().setMode('explore')
+    }
+  }, [mode])
+  
   return (
     <>
+      {/* Landing Screen */}
       {mode === 'landing' && <Landing />}
+      
+      {/* Desktop Mode UI */}
       {mode === 'explore' && <ControlsOverlay />}
+      
+      {/* Scene Selector Modal */}
       {sceneSelectorOpen && <SceneSelector />}
       
-      {mode === 'xr' && (
+      {/* 🥽 VR Mode Indicator - Solo se feature enabled */}
+      {FEATURES.VR_ENABLED && mode === 'xr' && (
         <div style={{ 
           position: 'fixed', 
           top: 20, 
@@ -43,18 +69,33 @@ function App() {
         </div>
       )}
       
-      {(mode === 'explore' || mode === 'xr') && currentSceneId === 'scene1' && (
-        <Scene1 xrStore={xrStore} />
+      {/* 
+        🎬 SCENE RENDERING
+        Importante: 
+        - Solo in explore mode (no 'xr' quando VR disabled)
+        - xrStore passato solo se necessario
+        - vrEnabled prop per controllo interno
+      */}
+      
+      {mode === 'explore' && currentSceneId === 'scene1' && (
+        <Scene1 
+          xrStore={xrStore} 
+          vrEnabled={FEATURES.VR_ENABLED} 
+        />
       )}
       
-      {(mode === 'explore' || mode === 'xr') && currentSceneId === 'scene2' && (
-        // @ts-ignore
-        <Scene2 xrStore={xrStore} />
+      {mode === 'explore' && currentSceneId === 'scene2' && (
+        <Scene2 
+          xrStore={xrStore} 
+          vrEnabled={FEATURES.VR_ENABLED} 
+        />
       )}
       
-      {(mode === 'explore' || mode === 'xr') && currentSceneId === 'scene3' && (
-        // @ts-ignore
-        <Scene3 xrStore={xrStore} />
+      {mode === 'explore' && currentSceneId === 'scene3' && (
+        <Scene3 
+          xrStore={xrStore} 
+          vrEnabled={FEATURES.VR_ENABLED} 
+        />
       )}
     </>
   )
