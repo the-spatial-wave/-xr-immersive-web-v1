@@ -1,0 +1,9 @@
+﻿node_modules
+dist
+.env
+.env.local
+.vercel
+*.blend
+*.blend1
+public/models/environment.glb
+public/textures/skybox/*_old.hdr

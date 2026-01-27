@@ -1,0 +1,76 @@
+/* ============================================
+   CONTROLS OVERLAY
+   ============================================ */
+.controls-overlay {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 50;
+  
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  padding: 1rem 2rem;
+  
+  /* Glass morphism */
+  background: rgba(10, 20, 40, 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  
+  /* Subtle glow */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   CONTROL ITEMS
+   ============================================ */
+.control-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-icon {
+  font-size: 1.2rem;
+  opacity: 0.8;
+}
+
+.control-text {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+}
+
+.control-text strong {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+/* ============================================
+   SEPARATOR
+   ============================================ */
+.control-separator {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.875rem;
+  margin: 0 0.25rem;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .controls-overlay {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    bottom: 1rem;
+  }
+  
+  .control-separator {
+    display: none;
+  }
+}

@@ -1,0 +1,140 @@
+/* ============================================
+   LANDING OVERLAY
+   ============================================ */
+.landing-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  
+  /* Glass morphism background */
+  background: rgba(5, 10, 25, 0.85);
+  backdrop-filter: blur(10px);
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background: rgba(0, 255, 255, 0.1);
+  border: 1px solid rgba(0, 255, 255, 0.3);
+  border-radius: 20px;
+  color: #00ffff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  margin: 0 auto;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+  font-weight: 300;
+}
+
+/* ============================================
+   CTA BUTTONS
+   ============================================ */
+.cta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 280px;
+}
+
+/* Base button styles */
+.cta-group button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+/* Primary Button (Enter VR) */
+.btn-primary {
+  background: #00ffff;
+  color: #000000;
+  box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+}
+
+.btn-primary:hover {
+  background: #00e5e5;
+  box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Secondary Button (Explore) */
+.btn-secondary {
+  background: transparent;
+  color: #ff00ff;
+  border: 2px solid #ff00ff;
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 0, 255, 0.1);
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.dimmed {
+  color: rgba(255, 0, 255, 0.6);
+}
+
+/* Tertiary Button (Scegli scena) */
+.btn-tertiary {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-tertiary:hover {
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================
+   CONTROLS HINT
+   ============================================ */
+.controls-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.875rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
