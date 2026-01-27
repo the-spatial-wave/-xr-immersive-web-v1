@@ -10,15 +10,17 @@ export function Landing() {
       <div className="hero">
         <div className="badge">XR Reset • Experience</div>
         <h1 className="title">THIS IS THE GAME CHANGER</h1>
-        <p className="subtitle">Lyra Hub • Scene 1 • Cinematic intro</p>
+        <p className="subtitle">• Lyra Hub • </p>
       </div>
       
       <div className="cta-group">
         <button 
           className="btn-primary" 
-          onClick={() => setMode('xr')}
+          disabled
+          style={{ opacity: 0.6, cursor: 'not-allowed' }}
+          title="VR Mode coming soon!"
         >
-          Enter VR
+          Enter VR <span className="dimmed">(Coming Soon)</span>
         </button>
         
         <button 
