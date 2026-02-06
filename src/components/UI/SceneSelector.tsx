@@ -75,8 +75,8 @@ export function SceneSelector() {
           
           {/* SCENE 2 - XR RESET */}
           <div 
-            className="scene-card disabled"
-            onClick={() => handleSceneEnter('scene2', false)}
+            className="scene-card"
+onClick={() => handleSceneEnter('scene2', true)}
           >
             <div className="scene-thumbnail">
               <div className="scene-badge coming-soon">COMING SOON</div>
