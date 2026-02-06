@@ -73,25 +73,32 @@ export function SceneSelector() {
             </div>
           </div>
           
-          {/* SCENE 2 - XR RESET */}
+          {/* SCENE 2 - XR RESET (AGGIORNATA) */}
           <div 
-            className="scene-card"
-onClick={() => handleSceneEnter('scene2', true)}
+            className={`scene-card ${currentSceneId === 'scene2' ? 'active' : ''}`}
+            onClick={() => handleSceneEnter('scene2', true)}
           >
             <div className="scene-thumbnail">
-              <div className="scene-badge coming-soon">COMING SOON</div>
+              {currentSceneId === 'scene2' ? (
+                <div className="scene-badge active">IN CORSO</div>
+              ) : (
+                <div className="scene-badge available">DISPONIBILE</div>
+              )}
             </div>
             
             <div className="scene-content">
               <h3 className="scene-title">XR RESET</h3>
+              <h4 className="scene-tagline">Quiz Gallery</h4>
               <p className="scene-subtitle">
-                Quiz interattivo con card dinamiche per testare 
-                le tue conoscenze in un ambiente immersivo
+                Incontra LYRA e inizia il quiz interattivo. 
+                5 domande per scoprire il tuo percorso nella realtà estesa.
               </p>
               
-              <button className="scene-enter-btn" disabled>
-                Prossimamente
+              <button className="scene-enter-btn">
+                {currentSceneId === 'scene2' ? 'Attiva' : 'ENTRA NELLA GALLERY'}
               </button>
+              
+              <div className="scene-info">2 minuti • Esperienza 3D</div>
             </div>
           </div>
           

@@ -187,6 +187,14 @@
   box-shadow: 0 0 15px rgba(0, 217, 255, 0.20);
 }
 
+/* Available badge (cyan/green) - NUOVO */
+.scene-badge.available {
+  background: rgba(0, 217, 255, 0.12);
+  border: 1px solid rgba(0, 217, 255, 0.35);
+  color: rgba(0, 255, 255, 0.90);
+  box-shadow: 0 0 12px rgba(0, 217, 255, 0.15);
+}
+
 /* Coming Soon badge (pink) */
 .scene-badge.coming-soon {
   background: rgba(236, 72, 153, 0.12);
@@ -212,11 +220,31 @@
   letter-spacing: -0.01em;
 }
 
+/* Scene tagline (sotto titolo) - NUOVO */
+.scene-tagline {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgba(0, 217, 255, 0.75);
+  margin: 0;
+  letter-spacing: 0.01em;
+}
+
 .scene-subtitle {
   font-size: 0.875rem;
   color: rgba(255, 255, 255, 0.55);
   margin: 0;
   font-weight: 400;
+}
+
+/* Scene info (sotto button) - NUOVO */
+.scene-info {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 0.625rem;
+  padding-top: 0.625rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center;
+  letter-spacing: 0.02em;
 }
 
 /* ENTER BUTTON */

@@ -1,11 +1,13 @@
-// Scene 2 - Gallery - SHADOW FIX VERSION
+// Scene 2 - Gallery - SHADOW FIX VERSION + QUIZ PANEL
 // All shadow artifacts fixed: receiveShadow, bias, ContactShadows optimization
+// Quiz Panel integrato per navigazione a Scene 3
 
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, PerspectiveCamera, ContactShadows, useGLTF } from '@react-three/drei'
 import type { XRStore } from '@react-three/xr'
 import { Suspense, useEffect, useRef } from 'react'
 import * as THREE from 'three'
+import { QuizPanel } from '../UI/QuizPanel'
 
 // ================================================
 // PROPS INTERFACE
@@ -13,6 +15,7 @@ import * as THREE from 'three'
 interface Scene2Props {
   xrStore?: XRStore
   vrEnabled?: boolean
+  onNavigate?: (scene: number) => void
 }
 
 // ================================================
@@ -198,10 +201,10 @@ function LuminousSphere() {
         />
       </mesh>
       
-      {/* Point light from sphere */}
+      {/* Point light from sphere - ridotta per non competere con panel */}
       <pointLight 
         position={[0, 0, 0]}
-        intensity={12}
+        intensity={10.2}
         distance={8}
         decay={2}
         color="#ffd9a8"
@@ -242,7 +245,7 @@ function SpiralLamp() {
         <meshStandardMaterial
           color="#ffffff"
           emissive="#e8e8f0"
-          emissiveIntensity={1.8}
+          emissiveIntensity={1.44}
           toneMapped={false}
         />
       </mesh>
@@ -544,15 +547,29 @@ function LoadingFallback() {
 }
 
 // ================================================
-// MAIN SCENE 2 - SHADOW FIX VERSION
+// MAIN SCENE 2 - SHADOW FIX VERSION + QUIZ PANEL
 // ================================================
 export default function Scene2(props: Scene2Props) {
   const vrEnabled = props.vrEnabled ?? false
+  const { onNavigate } = props
+  
+  // Handler per Quiz Panel
+  const handleStartQuiz = () => {
+    console.log('🎮 Starting Quiz...')
+    
+    if (onNavigate) {
+      onNavigate(3)  // Navigate to Scene 3
+    } else {
+      console.log('✅ Quiz Panel clicked! (Scene 3 not implemented yet)')
+      alert('Quiz Panel clicked! Scene 3 sarà implementata prossimamente.')
+    }
+  }
   
   useEffect(() => {
-    console.log(`📍 SCENE 2 GALLERY (SHADOW FIX VERSION)`)
+    console.log(`📍 SCENE 2 GALLERY (SHADOW FIX + QUIZ PANEL)`)
     console.log(`   VR: ${vrEnabled ? 'ENABLED ✅' : 'DISABLED 🚫'}`)
     console.log(`   ✨ Shadow artifacts fix applied`)
+    console.log(`   🎯 Quiz Panel integrated`)
   }, [vrEnabled])
   
   return (
@@ -571,7 +588,7 @@ export default function Scene2(props: Scene2Props) {
       }}>
         <div>LYRA HUB</div>
         <div style={{ marginTop: 5, fontSize: '10px', opacity: 0.6 }}>
-          GALLERY — SCENE 2 (SHADOW FIX)
+          GALLERY — SCENE 2 (SHADOW FIX + QUIZ PANEL)
         </div>
       </div>
       
@@ -599,10 +616,10 @@ export default function Scene2(props: Scene2Props) {
         }}
         style={{ background: '#1a1a1c' }}
       >
-        {/* Camera positioned like reference image */}
+        {/* Camera with micro-adjustment for panel focus */}
         <PerspectiveCamera 
           makeDefault 
-          position={[5, 2.5, 7]} 
+          position={[5, 2.5, 7.1]} 
           fov={50}
         />
         
@@ -622,21 +639,29 @@ export default function Scene2(props: Scene2Props) {
           <PlanterPot />
           <BackWalls />
           
-          {/* Lyra2 Character - posizionato sulla piattaforma principale */}
-          <group position={[0, 0.3, 0]} scale={3}>
+          {/* Lyra2 Character - ruotato verso panel, posizione ottimizzata */}
+          <group position={[1.6, 0.3, 0]} scale={3} rotation={[0, -0.12, 0]}>
             <Lyra2Character />
+          </group>
+          
+          {/* 🎯 Quiz Panel - Micro Z tilt per effetto oggetto */}
+          <group rotation={[0, Math.PI / 5, 0.04]}>
+            <QuizPanel 
+              position={[-0.5, 1.6, 1.05]}
+              onStartQuiz={handleStartQuiz}
+            />
           </group>
         </Suspense>
         
-        {/* 🔥 FIX: Optimized ContactShadows (high res, stable) */}
+        {/* 🔥 Soft ContactShadows per effetto floating */}
         <ContactShadows
           position={[0, 0.01, 0]}
-          opacity={0.4}              // Reduced opacity
+          opacity={0.34}              // Ridotta da 0.4 (-15%)
           scale={20}
-          blur={2.5}
+          blur={3.2}                  // Aumentato da 2.5
           far={4}
-          resolution={1024}          // 👈 Higher resolution
-          frames={1}                 // 👈 Stable rendering (no flicker)
+          resolution={1024}
+          frames={1}
           color="#000000"
         />
         
