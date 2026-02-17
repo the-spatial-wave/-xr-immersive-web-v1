@@ -18,6 +18,7 @@ import { useAppStore } from '../../store/appStore'
 interface Scene1Props {
   xrStore: XRStore
   vrEnabled?: boolean
+  onNavigate?: (sceneNumber: number) => void  // ✅ AGGIUNTO
 }
 
 /* ============================================

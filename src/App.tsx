@@ -15,11 +15,34 @@ function App() {
   const mode = useAppStore(s => s.mode)
   const currentSceneId = useAppStore(s => s.currentSceneId)
   const sceneSelectorOpen = useAppStore(s => s.ui.sceneSelectorOpen)
+  const setScene = useAppStore(s => s.setScene)
   
   useDesktopControls()
   
+  // 🎯 Navigation handler for scene transitions
+  const navigateToScene = (sceneNumber: number) => {
+    console.log(`🎬 Navigating to Scene ${sceneNumber}`)
+    
+    const sceneMap: Record<number, 'scene1' | 'scene2' | 'scene3'> = {
+      1: 'scene1',
+      2: 'scene2',
+      3: 'scene3'
+    }
+    
+    const sceneId = sceneMap[sceneNumber]
+    
+    if (sceneId) {
+      setScene(sceneId)
+    } else {
+      console.warn(`⚠️ Scene ${sceneNumber} not implemented yet`)
+      
+      if (sceneNumber === 4) {
+        alert('🚧 Scene 4 (Orientation Chamber) coming soon!')
+      }
+    }
+  }
+  
   // 🚧 VR MASTER GUARD
-  // Blocca qualsiasi tentativo di entrare in VR quando feature è disabled
   useEffect(() => {
     if (!FEATURES.VR_ENABLED && mode === 'xr') {
       console.warn('⚠️ VR Mode blocked - Feature disabled in config/features.ts')
@@ -31,7 +54,6 @@ function App() {
         "Stay tuned! 🚀"
       )
       
-      // Force return to explore mode
       useAppStore.getState().setMode('explore')
     }
   }, [mode])
@@ -70,31 +92,31 @@ function App() {
       )}
       
       {/* 
-        🎬 SCENE RENDERING
-        Importante: 
-        - Solo in explore mode (no 'xr' quando VR disabled)
-        - xrStore passato solo se necessario
-        - vrEnabled prop per controllo interno
+        🎬 SCENE RENDERING - WITH NAVIGATION FIX
+        Importante: onNavigate prop aggiunto a tutte le scene
       */}
       
       {mode === 'explore' && currentSceneId === 'scene1' && (
         <Scene1 
           xrStore={xrStore} 
-          vrEnabled={FEATURES.VR_ENABLED} 
+          vrEnabled={FEATURES.VR_ENABLED}
+          onNavigate={navigateToScene}
         />
       )}
       
       {mode === 'explore' && currentSceneId === 'scene2' && (
         <Scene2 
           xrStore={xrStore} 
-          vrEnabled={FEATURES.VR_ENABLED} 
+          vrEnabled={FEATURES.VR_ENABLED}
+          onNavigate={navigateToScene}
         />
       )}
       
       {mode === 'explore' && currentSceneId === 'scene3' && (
         <Scene3 
           xrStore={xrStore} 
-          vrEnabled={FEATURES.VR_ENABLED} 
+          vrEnabled={FEATURES.VR_ENABLED}
+          onNavigate={navigateToScene}
         />
       )}
     </>
