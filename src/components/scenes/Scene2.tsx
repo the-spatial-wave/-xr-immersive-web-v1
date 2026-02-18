@@ -1,4 +1,4 @@
-// Scene 2 - Gallery - SHADOW FIX VERSION + QUIZ PANEL
+// Scene 2 - Gallery - SHADOW FIX VERSION + QUIZ PANEL + SIGNATURE
 // All shadow artifacts fixed: receiveShadow, bias, ContactShadows optimization
 // Quiz Panel integrato per navigazione a Scene 3
 
@@ -547,7 +547,7 @@ function LoadingFallback() {
 }
 
 // ================================================
-// MAIN SCENE 2 - SHADOW FIX VERSION + QUIZ PANEL
+// MAIN SCENE 2 - SHADOW FIX VERSION + QUIZ PANEL + SIGNATURE
 // ================================================
 export default function Scene2(props: Scene2Props) {
   const vrEnabled = props.vrEnabled ?? false
@@ -676,6 +676,24 @@ export default function Scene2(props: Scene2Props) {
           enablePan={true}
         />
       </Canvas>
+
+      {/* Firma */}
+      <div style={{
+        position: 'absolute',
+        bottom: '20px',
+        right: '20px',
+        zIndex: 100,
+        textAlign: 'right',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '11px',
+        color: 'rgba(255,255,255,0.6)',
+        lineHeight: 1.5,
+        letterSpacing: '0.5px',
+        pointerEvents: 'none'
+      }}>
+        <div style={{ fontWeight: 600, marginBottom: '2px' }}>Lyra Hub</div>
+        <div style={{ fontSize: '10px', opacity: 0.85 }}>An experience by The Spatial Wave</div>
+      </div>
     </div>
   )
 }

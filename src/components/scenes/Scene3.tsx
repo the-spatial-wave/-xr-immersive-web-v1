@@ -1007,6 +1007,24 @@ export default function Scene3(props: Scene3Props) {
       >
         SCENE 3 — XR RESET QUIZ
       </div>
+
+      {/* Firma */}
+      <div style={{
+        position: 'absolute',
+        bottom: '20px',
+        right: '20px',
+        zIndex: 100,
+        textAlign: 'right',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '11px',
+        color: 'rgba(255,255,255,0.6)',
+        lineHeight: 1.5,
+        letterSpacing: '0.5px',
+        pointerEvents: 'none'
+      }}>
+        <div style={{ fontWeight: 600, marginBottom: '2px' }}>Lyra Hub</div>
+        <div style={{ fontSize: '10px', opacity: 0.85 }}>An experience by The Spatial Wave</div>
+      </div>
     </div>
   )
 }

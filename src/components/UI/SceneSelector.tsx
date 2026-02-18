@@ -125,6 +125,24 @@ export function SceneSelector() {
           </div>
           
         </div>
+
+        {/* Firma */}
+        <div style={{
+          position: 'absolute',
+          top: '20px',
+          right: '110px',
+          zIndex: 100,
+          textAlign: 'right',
+          fontFamily: 'Arial, sans-serif',
+          fontSize: '10px',
+          color: 'rgba(255,255,255,0.5)',
+          lineHeight: 1.4,
+          letterSpacing: '0.5px',
+          pointerEvents: 'none'
+        }}>
+          <div style={{ fontWeight: 600, marginBottom: '1px' }}>Lyra Hub</div>
+          <div style={{ fontSize: '9px', opacity: 0.8 }}>An experience by The Spatial Wave</div>
+        </div>
       </div>
     </div>
   )

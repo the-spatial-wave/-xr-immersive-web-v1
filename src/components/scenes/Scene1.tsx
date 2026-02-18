@@ -1,5 +1,5 @@
 // Scene 1 - This is the Game Changer
-// V2.3.2 - Fixed Torus Rotation
+// V2.3.3 - Added signature
 
 import { Canvas } from '@react-three/fiber'
 import {
@@ -18,7 +18,7 @@ import { useAppStore } from '../../store/appStore'
 interface Scene1Props {
   xrStore: XRStore
   vrEnabled?: boolean
-  onNavigate?: (sceneNumber: number) => void  // ✅ AGGIUNTO
+  onNavigate?: (sceneNumber: number) => void
 }
 
 /* ============================================
@@ -111,7 +111,7 @@ function Scene1Ground() {
 function SceneDebug({ vrEnabled }: { vrEnabled: boolean }) {
   useEffect(() => {
     console.log(
-      `📍 SCENE 1 V2.3.2 LOADED (VR: ${vrEnabled ? 'ENABLED ✅' : 'DISABLED 🚫'})`
+      `📍 SCENE 1 V2.3.3 LOADED (VR: ${vrEnabled ? 'ENABLED ✅' : 'DISABLED 🚫'})`
     )
   }, [vrEnabled])
 
@@ -291,6 +291,24 @@ export default function Scene1(props: Scene1Props) {
           />
         )}
       </Canvas>
+
+      {/* Firma */}
+      <div style={{
+        position: 'absolute',
+        bottom: '20px',
+        right: '20px',
+        zIndex: 100,
+        textAlign: 'right',
+        fontFamily: 'Arial, sans-serif',
+        fontSize: '11px',
+        color: 'rgba(255,255,255,0.6)',
+        lineHeight: 1.5,
+        letterSpacing: '0.5px',
+        pointerEvents: 'none'
+      }}>
+        <div style={{ fontWeight: 600, marginBottom: '2px' }}>Lyra Hub</div>
+        <div style={{ fontSize: '10px', opacity: 0.85 }}>An experience by The Spatial Wave</div>
+      </div>
     </div>
   )
 }
