@@ -1,5 +1,5 @@
 // Scene 3 - XR Reset Quiz (LITE)
-// V3.1.0 - Fix: Math.random particles moved to useMemo
+// V3.2.0 - 3-Act Delayed Activation Sequence on Results
 
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, PerspectiveCamera, ContactShadows } from '@react-three/drei'
@@ -539,6 +539,36 @@ interface ResultsOverlayProps {
 
 function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps) {
   const data = PROFILES[profile]
+  
+  // 🎬 3-ACT SEQUENCE STATE
+  const [showScanLine, setShowScanLine] = useState(false)
+  const [showButtons, setShowButtons] = useState(false)
+  const [showSecondaryButtons, setShowSecondaryButtons] = useState(false)
+
+  useEffect(() => {
+    // Atto 1: 0-2s → Solo lettura (bottoni invisibili)
+    
+    // Atto 2: 2s → Scan line activation
+    const scanTimer = setTimeout(() => {
+      setShowScanLine(true)
+    }, 2000)
+    
+    // Atto 3: 3s → Primary button appears
+    const primaryTimer = setTimeout(() => {
+      setShowButtons(true)
+    }, 3000)
+    
+    // Atto 3b: 3.2s → Secondary buttons appear
+    const secondaryTimer = setTimeout(() => {
+      setShowSecondaryButtons(true)
+    }, 3200)
+    
+    return () => {
+      clearTimeout(scanTimer)
+      clearTimeout(primaryTimer)
+      clearTimeout(secondaryTimer)
+    }
+  }, [])
 
   return (
     <div
@@ -564,9 +594,26 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
           width: '100%',
           backdropFilter: 'blur(24px)',
           boxShadow: `0 0 60px ${data.color}20, 0 20px 60px rgba(0,0,0,0.6)`,
-          textAlign: 'center'
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
+        {/* 🎬 ATTO 2: Scan Line Animation */}
+        {showScanLine && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '2px',
+              background: `linear-gradient(90deg, transparent, ${data.color}, transparent)`,
+              boxShadow: `0 0 20px ${data.color}`,
+              animation: 'scanLine 0.8s ease-out forwards'
+            }}
+          />
+        )}
         <div style={{ fontSize: '48px', marginBottom: '16px' }}>{data.icon}</div>
 
         <div
@@ -626,7 +673,9 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
           {data.description}
         </div>
 
+        {/* 🎬 ATTO 3: Buttons with sequential appearance */}
         <div style={{ display: 'flex', gap: '12px', flexDirection: 'column' }}>
+          {/* Primary CTA - appears first with pulse */}
           <button
             onClick={() => onNavigate(4)}
             style={{
@@ -639,7 +688,10 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
               fontWeight: 600,
               letterSpacing: '1px',
               cursor: 'pointer',
-              transition: 'all 0.25s'
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              opacity: showButtons ? 1 : 0,
+              transform: showButtons ? 'translateY(0)' : 'translateY(10px)',
+              animation: showButtons ? 'gentlePulse 2s ease-in-out 3' : 'none'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = `${data.color}25`
@@ -653,6 +705,7 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
             SCOPRI IL TUO PERCORSO →
           </button>
 
+          {/* Secondary buttons - appear 200ms later */}
           <button
             onClick={onRestart}
             style={{
@@ -663,8 +716,10 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
               color: 'rgba(255,255,255,0.45)',
               fontSize: '13px',
               cursor: 'pointer',
-              transition: 'all 0.25s',
-              letterSpacing: '0.5px'
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              letterSpacing: '0.5px',
+              opacity: showSecondaryButtons ? 1 : 0,
+              transform: showSecondaryButtons ? 'translateY(0)' : 'translateY(10px)'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = 'rgba(255,255,255,0.7)'
@@ -688,7 +743,9 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
               cursor: 'pointer',
               padding: '6px',
               letterSpacing: '0.5px',
-              transition: 'color 0.2s'
+              transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+              opacity: showSecondaryButtons ? 1 : 0,
+              transform: showSecondaryButtons ? 'translateY(0)' : 'translateY(10px)'
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.color = 'rgba(255,255,255,0.5)'
@@ -825,6 +882,32 @@ export default function Scene3(props: Scene3Props) {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.6; }
+        }
+        @keyframes scanLine {
+          0% { 
+            top: 0;
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% { 
+            top: 100%;
+            opacity: 0;
+          }
+        }
+        @keyframes gentlePulse {
+          0%, 100% { 
+            transform: translateY(0) scale(1);
+            box-shadow: 0 0 0 rgba(255,255,255,0);
+          }
+          50% { 
+            transform: translateY(0) scale(1.02);
+            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+          }
         }
       `}</style>
 
