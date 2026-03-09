@@ -587,9 +587,6 @@ export default function Scene2(props: Scene2Props) {
         letterSpacing: '2px'
       }}>
         <div>LYRA HUB</div>
-        <div style={{ marginTop: 5, fontSize: '10px', opacity: 0.6 }}>
-          GALLERY — SCENE 2 (SHADOW FIX + QUIZ PANEL)
-        </div>
       </div>
       
       <Canvas
