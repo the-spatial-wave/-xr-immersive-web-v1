@@ -6,6 +6,7 @@ import {
   OrbitControls,
   PerspectiveCamera,
   ContactShadows,
+  useGLTF,
 } from '@react-three/drei'
 import { XR } from '@react-three/xr'
 import type { XRStore } from '@react-three/xr'
@@ -14,6 +15,9 @@ import * as THREE from 'three'
 
 import LyraCharacter from '../lyra/LyraCharacter'
 import { useAppStore } from '../../store/appStore'
+
+// Preload Scene 2 model for better mobile performance
+useGLTF.preload('/models/lyra_2scena.glb')
 
 interface Scene1Props {
   xrStore: XRStore
