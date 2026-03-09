@@ -677,7 +677,7 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
         <div style={{ display: 'flex', gap: '12px', flexDirection: 'column' }}>
           {/* Primary CTA - appears first with pulse */}
           <button
-            onClick={() => onNavigate(4)}
+            onClick={() => window.open('https://www.skool.com/spatial-wave-6263/about', '_blank')}
             style={{
               background: `linear-gradient(135deg, ${data.color}30, ${data.color}15)`,
               border: `1px solid ${data.color}50`,
