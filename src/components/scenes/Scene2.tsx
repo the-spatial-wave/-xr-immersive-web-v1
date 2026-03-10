@@ -3,7 +3,7 @@
 // Quiz Panel integrato per navigazione a Scene 3
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { OrbitControls, PerspectiveCamera, ContactShadows, useGLTF, Float, Html } from '@react-three/drei'
+import { OrbitControls, ContactShadows, useGLTF, Float, Html } from '@react-three/drei'
 import type { XRStore } from '@react-three/xr'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
@@ -456,7 +456,7 @@ function BackWalls() {
 
   // Sequential LED activation
   useEffect(() => {
-    const timers: NodeJS.Timeout[] = []
+    const timers: ReturnType<typeof setTimeout>[] = []
     timers.push(setTimeout(() => setPanel1Visible(true), 500))
     timers.push(setTimeout(() => setPanel2Visible(true), 2300))
     timers.push(setTimeout(() => setPanel3Visible(true), 4100))
@@ -490,7 +490,7 @@ function BackWalls() {
 }
 
 // Individual LED Panel with animation
-function LEDPanel({ position, width, color, label, subtitle, visible, texture }: {
+function LEDPanel({ position, width, color, label, subtitle, visible, texture: _texture }: {
   position: [number, number, number]
   width: number
   color: string

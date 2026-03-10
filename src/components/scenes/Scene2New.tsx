@@ -133,7 +133,7 @@ interface AnimatedPanelProps {
   sublabel: string
 }
 
-function AnimatedPanel({ position, rotation, color, delay, visible, label, sublabel }: AnimatedPanelProps) {
+function AnimatedPanel({ position, rotation, color, delay: _delay, visible, label, sublabel }: AnimatedPanelProps) {
   if (!visible) return null
 
   const meshRef = useRef<THREE.Mesh>(null)
@@ -379,7 +379,7 @@ function SceneContent({ onNavigate }: { onNavigate?: (scene: number) => void }) 
   const [hintVisible, setHintVisible] = useState(false)
 
   useEffect(() => {
-    const timers: NodeJS.Timeout[] = []
+    const timers: ReturnType<typeof setTimeout>[] = []
     timers.push(setTimeout(() => setPanel1Visible(true), 1500))
     timers.push(setTimeout(() => setPanel2Visible(true), 3000))
     timers.push(setTimeout(() => setPanel3Visible(true), 4500))
