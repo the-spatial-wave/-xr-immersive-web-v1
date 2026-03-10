@@ -7,6 +7,7 @@ import { SceneSelector } from './components/UI/SceneSelector'
 import Scene1 from './components/scenes/Scene1'
 import Scene2 from './components/scenes/Scene2'
 import Scene3 from './components/scenes/Scene3'
+import Scene4 from './components/scenes/Scene4'
 import { xrStore } from './store/xrStore'
 import { FEATURES } from './config/features'
 import './App.css'
@@ -14,6 +15,7 @@ import './App.css'
 function App() {
   const mode = useAppStore(s => s.mode)
   const currentSceneId = useAppStore(s => s.currentSceneId)
+  const quizProfile = useAppStore(s => s.quizProfile)
   const sceneSelectorOpen = useAppStore(s => s.ui.sceneSelectorOpen)
   const setScene = useAppStore(s => s.setScene)
   
@@ -22,23 +24,20 @@ function App() {
   // 🎯 Navigation handler for scene transitions
   const navigateToScene = (sceneNumber: number) => {
     console.log(`🎬 Navigating to Scene ${sceneNumber}`)
-    
-    const sceneMap: Record<number, 'scene1' | 'scene2' | 'scene3'> = {
+
+    const sceneMap: Record<number, 'scene1' | 'scene2' | 'scene3' | 'scene4'> = {
       1: 'scene1',
       2: 'scene2',
-      3: 'scene3'
+      3: 'scene3',
+      4: 'scene4'
     }
     
     const sceneId = sceneMap[sceneNumber]
-    
+
     if (sceneId) {
       setScene(sceneId)
     } else {
       console.warn(`⚠️ Scene ${sceneNumber} not implemented yet`)
-      
-      if (sceneNumber === 4) {
-        alert('🚧 Scene 4 (Orientation Chamber) coming soon!')
-      }
     }
   }
   
@@ -113,10 +112,18 @@ function App() {
       )}
       
       {mode === 'explore' && currentSceneId === 'scene3' && (
-        <Scene3 
-          xrStore={xrStore} 
+        <Scene3
+          xrStore={xrStore}
           vrEnabled={FEATURES.VR_ENABLED}
           onNavigate={navigateToScene}
+        />
+      )}
+
+      {mode === 'explore' && currentSceneId === 'scene4' && (
+        <Scene4
+          profile={quizProfile || 'navigator'}
+          onRestart={() => setScene('scene1')}
+          onBack={() => setScene('scene2')}
         />
       )}
     </>

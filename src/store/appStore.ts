@@ -10,7 +10,10 @@ interface AppState {
   mode: 'landing' | 'explore' | 'xr'
   
   // Scena attualmente attiva
-  currentSceneId: 'scene1' | 'scene2' | 'scene3'
+  currentSceneId: 'scene1' | 'scene2' | 'scene3' | 'scene4'
+
+  // Profilo risultante dal quiz XR Reset
+  quizProfile: 'navigator' | 'architect' | 'alchemist' | null
   
   // Stato UI (pannelli aperti/chiusi)
   ui: {
@@ -28,7 +31,10 @@ interface AppState {
   
   // Cambia scena corrente
   setScene: (sceneId: AppState['currentSceneId']) => void
-  
+
+  // Imposta profilo quiz
+  setQuizProfile: (profile: 'navigator' | 'architect' | 'alchemist') => void
+
   // Apre/chiude help panel
   toggleHelp: () => void
   
@@ -46,7 +52,8 @@ export const useAppStore = create<AppState>((set) => ({
   // === VALORI INIZIALI ===
   mode: 'landing',                    // App parte da landing screen
   currentSceneId: 'scene1',           // Parte da Scene 1
-  ui: { 
+  quizProfile: null,                  // Nessun profilo inizialmente
+  ui: {
     helpOpen: false,                  // Help chiuso di default
     sceneSelectorOpen: false          // Scene selector chiuso di default
   },
@@ -56,10 +63,13 @@ export const useAppStore = create<AppState>((set) => ({
   
   // Cambia mode
   setMode: (mode) => set({ mode }),
-  
+
   // Cambia scena
   setScene: (sceneId) => set({ currentSceneId: sceneId }),
-  
+
+  // Imposta profilo quiz
+  setQuizProfile: (profile) => set({ quizProfile: profile }),
+
   // Toggle help (apre se chiuso, chiude se aperto)
   toggleHelp: () => set((state) => ({ 
     ui: { ...state.ui, helpOpen: !state.ui.helpOpen } 

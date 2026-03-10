@@ -677,7 +677,10 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
         <div style={{ display: 'flex', gap: '12px', flexDirection: 'column' }}>
           {/* Primary CTA - appears first with pulse */}
           <button
-            onClick={() => window.open('https://www.skool.com/spatial-wave-6263/about', '_blank')}
+            onClick={() => {
+              useAppStore.getState().setQuizProfile(profile)
+              if (onNavigate) onNavigate(4)
+            }}
             style={{
               background: `linear-gradient(135deg, ${data.color}30, ${data.color}15)`,
               border: `1px solid ${data.color}50`,
@@ -772,6 +775,7 @@ export default function Scene3(props: Scene3Props) {
   const vrEnabled = props.vrEnabled ?? false
 
   // Quiz State
+  const [showIntro, setShowIntro] = useState(true)
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [userAnswers, setUserAnswers] = useState<number[]>([])
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
@@ -840,6 +844,7 @@ export default function Scene3(props: Scene3Props) {
   const handleRestart = useCallback(() => {
     setOverlayVisible(false)
     setTimeout(() => {
+      setShowIntro(true)
       setCurrentQuestion(0)
       setUserAnswers([])
       setSelectedAnswer(null)
@@ -861,6 +866,153 @@ export default function Scene3(props: Scene3Props) {
       }
     },
     [onNavigate]
+  )
+
+  // Quiz Intro Screen Component
+  const QuizIntroScreen = () => (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'radial-gradient(ellipse at center, #1e1b4b 0%, #0a0118 100%)',
+        zIndex: 10
+      }}
+    >
+      <div
+        style={{
+          background: 'rgba(5,5,16,0.92)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(0,217,255,0.2)',
+          borderRadius: '16px',
+          padding: '48px 40px',
+          maxWidth: '480px',
+          width: '90%',
+          textAlign: 'center',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}
+      >
+        {/* 1. Badge top */}
+        <div
+          style={{
+            fontSize: '10px',
+            letterSpacing: '3px',
+            color: 'rgba(0,217,255,0.5)',
+            textTransform: 'uppercase',
+            marginBottom: '32px'
+          }}
+        >
+          LYRA HUB · QUIZ XR
+        </div>
+
+        {/* 2. Titolo */}
+        <div style={{ marginBottom: '24px' }}>
+          <div
+            style={{
+              fontSize: '16px',
+              color: 'rgba(255,255,255,0.5)',
+              fontWeight: 400,
+              marginBottom: '4px'
+            }}
+          >
+            Scopri il tuo
+          </div>
+          <div
+            style={{
+              fontSize: '42px',
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #00d9ff, #ec4899)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}
+          >
+            Profilo XR
+          </div>
+        </div>
+
+        {/* 3. Divisore */}
+        <div
+          style={{
+            height: '1px',
+            width: '60px',
+            background: 'rgba(255,255,255,0.1)',
+            marginBottom: '24px'
+          }}
+        />
+
+        {/* 4. Meta info */}
+        <div
+          style={{
+            fontSize: '12px',
+            color: 'rgba(255,255,255,0.35)',
+            letterSpacing: '1px',
+            marginBottom: '20px'
+          }}
+        >
+          5 domande · 2 minuti
+        </div>
+
+        {/* 5. Quote */}
+        <div
+          style={{
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid rgba(255,255,255,0.06)',
+            borderRadius: '8px',
+            padding: '16px 20px',
+            marginBottom: '32px'
+          }}
+        >
+          <div
+            style={{
+              fontSize: '14px',
+              fontStyle: 'italic',
+              color: 'rgba(255,255,255,0.55)',
+              lineHeight: 1.6
+            }}
+          >
+            Non ci sono risposte giuste. Solo la tua direzione.
+          </div>
+        </div>
+
+        {/* 6. Bottone CTA */}
+        <button
+          onClick={() => setShowIntro(false)}
+          style={{
+            background: 'linear-gradient(135deg, #00d9ff, #ec4899)',
+            color: '#000',
+            fontWeight: 800,
+            fontSize: '14px',
+            letterSpacing: '1px',
+            padding: '16px 32px',
+            borderRadius: '8px',
+            border: 'none',
+            width: '100%',
+            cursor: 'pointer',
+            marginBottom: '12px'
+          }}
+        >
+          INIZIA IL TEST →
+        </button>
+
+        {/* 7. Link torna */}
+        <div
+          onClick={() => handleNavigate(2)}
+          style={{
+            fontSize: '12px',
+            color: 'rgba(255,255,255,0.25)',
+            cursor: 'pointer',
+            marginTop: '4px'
+          }}
+        >
+          ← Torna alla gallery
+        </div>
+      </div>
+    </div>
   )
 
   return (
@@ -932,7 +1084,9 @@ export default function Scene3(props: Scene3Props) {
       </Canvas>
 
       {/* Quiz / Results Overlay */}
-      {!quizComplete ? (
+      {showIntro ? (
+        <QuizIntroScreen />
+      ) : !quizComplete ? (
         <QuizOverlay
           currentQuestion={currentQuestion}
           questions={QUESTIONS}
