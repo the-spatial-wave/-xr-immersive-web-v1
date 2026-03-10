@@ -2,10 +2,10 @@
 // All shadow artifacts fixed: receiveShadow, bias, ContactShadows optimization
 // Quiz Panel integrato per navigazione a Scene 3
 
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, PerspectiveCamera, ContactShadows, useGLTF } from '@react-three/drei'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { OrbitControls, PerspectiveCamera, ContactShadows, useGLTF, Float, Html } from '@react-three/drei'
 import type { XRStore } from '@react-three/xr'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { QuizPanel } from '../UI/QuizPanel'
 
@@ -143,9 +143,9 @@ function MainPlatform() {
   texture.repeat.set(3, 3)
   
   return (
-    <mesh position={[0, 0.15, 0]} castShadow receiveShadow>
+    <mesh position={[0, -10, 0]} castShadow receiveShadow>
       <boxGeometry args={[5, 0.3, 5]} />
-      <meshStandardMaterial 
+      <meshStandardMaterial
         map={texture}
         color="#9a9a9e"
         roughness={0.65}
@@ -253,7 +253,7 @@ function SpiralLamp() {
   }
   
   return (
-    <group ref={groupRef} position={[-2.5, 0, -1]}>
+    <group ref={groupRef} position={[6, 0, -1]}>
       {rings}
       
       {/* Suspension points */}
@@ -400,7 +400,7 @@ function PlanterPot() {
   texture.repeat.set(2, 1)
   
   return (
-    <group position={[-2.8, 0.3, -0.5]}>
+    <group position={[-20, 0.3, -0.5]}>
       {/* Pot */}
       <mesh castShadow receiveShadow>
         <cylinderGeometry args={[0.4, 0.35, 0.6, 32]} />
@@ -442,32 +442,185 @@ function PlanterPot() {
 }
 
 // ================================================
-// BACK WALL PANELS
+// BACK WALL PANELS - LED SEQUENCE UPGRADE
 // ================================================
 function BackWalls() {
   const texture = createConcreteTexture('medium')
   texture.repeat.set(2, 4)
-  
+
+  // LED sequence visibility states
+  const [panel1Visible, setPanel1Visible] = useState(false)
+  const [panel2Visible, setPanel2Visible] = useState(false)
+  const [panel3Visible, setPanel3Visible] = useState(false)
+  const [panel4Visible, setPanel4Visible] = useState(false)
+
+  // Sequential LED activation
+  useEffect(() => {
+    const timers: NodeJS.Timeout[] = []
+    timers.push(setTimeout(() => setPanel1Visible(true), 500))
+    timers.push(setTimeout(() => setPanel2Visible(true), 2300))
+    timers.push(setTimeout(() => setPanel3Visible(true), 4100))
+    timers.push(setTimeout(() => setPanel4Visible(true), 5900))
+    return () => timers.forEach(clearTimeout)
+  }, [])
+
   const panels = [
-    { x: -4, width: 2.5 },
-    { x: -1, width: 2 },
-    { x: 1.5, width: 2 },
-    { x: 4, width: 2.5 },
+    { x: -4, width: 2.5, color: '#00e5ff', label: 'WEB XR', subtitle: 'Esperienze 3D nel browser', visible: panel1Visible },
+    { x: -1, width: 2, color: '#7a6cff', label: 'THE SPATIAL WAVE', subtitle: 'Studio XR · Community italiana', visible: panel2Visible },
+    { x: 1.5, width: 2, color: '#2ef2c9', label: 'LYRA HUB', subtitle: 'Il tuo profilo XR in 5 domande', visible: panel3Visible },
+    { x: 4, width: 2.5, color: '#ff2fd6', label: 'XR RESET', subtitle: 'Pubblica la tua scena in 4 ore', visible: panel4Visible },
   ]
-  
+
   return (
-    <group position={[0, 2.5, -5]}>
+    <group position={[0, 3.3, -5]}>
       {panels.map((panel, i) => (
-        <mesh key={i} position={[panel.x, 0, 0]} receiveShadow>
-          <boxGeometry args={[panel.width, 5, 0.3]} />
-          <meshStandardMaterial 
-            map={texture}
-            color="#5a5a5e"
-            roughness={0.75}
-            metalness={0.0}
-          />
-        </mesh>
+        <LEDPanel
+          key={i}
+          position={[panel.x, 0, 0]}
+          width={panel.width}
+          color={panel.color}
+          label={panel.label}
+          subtitle={panel.subtitle}
+          visible={panel.visible}
+          texture={texture}
+        />
       ))}
+    </group>
+  )
+}
+
+// Individual LED Panel with animation
+function LEDPanel({ position, width, color, label, subtitle, visible, texture }: {
+  position: [number, number, number]
+  width: number
+  color: string
+  label: string
+  subtitle: string
+  visible: boolean
+  texture: THREE.Texture
+}) {
+  const [currentIntensity, setCurrentIntensity] = useState(0)
+  const targetIntensity = visible ? 1.2 : 0
+
+  useFrame(() => {
+    setCurrentIntensity(prev => THREE.MathUtils.lerp(prev, targetIntensity, 0.04))
+  })
+
+  const height = 5
+  const depth = 0.3
+  const frameThickness = 0.04
+  const frameDepth = 0.05
+
+  return (
+    <group position={position}>
+      {/* Main panel - dark background */}
+      <mesh receiveShadow>
+        <boxGeometry args={[width, height, depth]} />
+        <meshStandardMaterial
+          color="#050508"
+          roughness={0.9}
+          metalness={0.1}
+        />
+      </mesh>
+
+      {/* LED Frame - Top */}
+      <mesh position={[0, height / 2, depth / 2 + frameDepth / 2]}>
+        <boxGeometry args={[width, frameThickness, frameDepth]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={currentIntensity}
+        />
+      </mesh>
+
+      {/* LED Frame - Bottom */}
+      <mesh position={[0, -height / 2, depth / 2 + frameDepth / 2]}>
+        <boxGeometry args={[width, frameThickness, frameDepth]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={currentIntensity}
+        />
+      </mesh>
+
+      {/* LED Frame - Left */}
+      <mesh position={[-width / 2, 0, depth / 2 + frameDepth / 2]}>
+        <boxGeometry args={[frameThickness, height, frameDepth]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={currentIntensity}
+        />
+      </mesh>
+
+      {/* LED Frame - Right */}
+      <mesh position={[width / 2, 0, depth / 2 + frameDepth / 2]}>
+        <boxGeometry args={[frameThickness, height, frameDepth]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={currentIntensity}
+        />
+      </mesh>
+
+      {/* Text Content */}
+      <Html
+        center
+        position={[0, 0, depth / 2 + 0.1]}
+        transform
+        distanceFactor={5}
+      >
+        <div style={{
+          textAlign: 'center',
+          pointerEvents: 'none',
+          userSelect: 'none',
+          opacity: visible ? 1 : 0,
+          transition: 'opacity 0.5s'
+        }}>
+          {/* Title - with special two-line handling for THE SPATIAL WAVE */}
+          {label === 'THE SPATIAL WAVE' ? (
+            <div style={{
+              fontFamily: 'Orbitron, sans-serif',
+              fontSize: '12px',
+              fontWeight: 700,
+              color: color,
+              letterSpacing: '2px',
+              marginBottom: '8px',
+              opacity: 1.0,
+              textShadow: `0 0 12px ${color}`
+            }}>
+              <div>THE SPATIAL</div>
+              <div>WAVE</div>
+            </div>
+          ) : (
+            <div style={{
+              fontFamily: 'Orbitron, sans-serif',
+              fontSize: '16px',
+              fontWeight: 700,
+              color: color,
+              letterSpacing: '3px',
+              marginBottom: '8px',
+              opacity: 1.0,
+              textShadow: `0 0 12px ${color}`
+            }}>
+              {label}
+            </div>
+          )}
+
+          {/* Subtitle */}
+          <div style={{
+            fontFamily: 'Manrope, sans-serif',
+            fontSize: '11px',
+            color: 'rgba(255,255,255,0.85)',
+            letterSpacing: '0.5px',
+            display: 'block',
+            marginTop: '6px',
+            lineHeight: 1.4
+          }}>
+            {subtitle}
+          </div>
+        </div>
+      </Html>
     </group>
   )
 }
@@ -478,8 +631,8 @@ function BackWalls() {
 function GalleryLighting() {
   return (
     <>
-      {/* Soft ambient */}
-      <ambientLight intensity={0.6} color="#e8e8f0" />
+      {/* Soft ambient - reduced for LED effect */}
+      <ambientLight intensity={0.1} color="#e8e8f0" />
       
       {/* 🔥 FIX: Main key light with PROPER shadow bias */}
       <directionalLight
@@ -536,9 +689,9 @@ function LoadingFallback() {
   return (
     <mesh position={[0, 0, 0]}>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial 
-        color="#404040" 
-        emissive="#404040" 
+      <meshStandardMaterial
+        color="#404040"
+        emissive="#404040"
         emissiveIntensity={0.3}
         wireframe
       />
@@ -547,16 +700,62 @@ function LoadingFallback() {
 }
 
 // ================================================
+// CAMERA INTRO ANIMATION - Zoom from far to close
+// ================================================
+function CameraIntroAnimation({ onReady }: { onReady: () => void }) {
+  const { camera } = useThree()
+  const [cameraAnimating, setCameraAnimating] = useState(true)
+  const hasStarted = useRef(false)
+
+  // Animate camera with lerp
+  useFrame(() => {
+    // Signal canvas is ready on first frame
+    if (!hasStarted.current) {
+      hasStarted.current = true
+      onReady()
+      console.log('📹 Camera intro animation started - zooming from [0, 8, 28]')
+    }
+
+    if (cameraAnimating) {
+      const target = new THREE.Vector3(0, 1.5, 7)
+
+      // Lerp camera position
+      camera.position.x = THREE.MathUtils.lerp(camera.position.x, target.x, 0.045)
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, target.y, 0.045)
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, target.z, 0.045)
+
+      // Always look at the center of the scene
+      camera.lookAt(0, 1, 0)
+
+      // Stop animation when close enough to target
+      if (camera.position.distanceTo(target) < 0.1) {
+        setCameraAnimating(false)
+        console.log('📹 Camera intro animation complete - reached target [0, 1.5, 7]')
+      }
+    }
+  })
+
+  return null
+}
+
+// ================================================
 // MAIN SCENE 2 - SHADOW FIX VERSION + QUIZ PANEL + SIGNATURE
 // ================================================
 export default function Scene2(props: Scene2Props) {
   const vrEnabled = props.vrEnabled ?? false
   const { onNavigate } = props
-  
+
+  // Canvas ready state to prevent first-frame bug
+  const [canvasReady, setCanvasReady] = useState(false)
+
+  // Label and Quiz Panel visibility with delays
+  const [labelVisible, setLabelVisible] = useState(false)
+  const [quizVisible, setQuizVisible] = useState(false)
+
   // Handler per Quiz Panel
   const handleStartQuiz = () => {
     console.log('🎮 Starting Quiz...')
-    
+
     if (onNavigate) {
       onNavigate(3)  // Navigate to Scene 3
     } else {
@@ -564,16 +763,62 @@ export default function Scene2(props: Scene2Props) {
       alert('Quiz Panel clicked! Scene 3 sarà implementata prossimamente.')
     }
   }
-  
+
   useEffect(() => {
     console.log(`📍 SCENE 2 GALLERY (SHADOW FIX + QUIZ PANEL)`)
     console.log(`   VR: ${vrEnabled ? 'ENABLED ✅' : 'DISABLED 🚫'}`)
     console.log(`   ✨ Shadow artifacts fix applied`)
     console.log(`   🎯 Quiz Panel integrated`)
+
+    // TODO: aggiungere /public/audio/scene2-intro.mp3
+    // Voice over after 1s
+    const voiceTimer = setTimeout(() => {
+      try {
+        const audio = new Audio('/audio/scene2-intro.mp3')
+        audio.play().catch(err => {
+          console.log('🔇 Voice over not available:', err.message)
+        })
+      } catch (err) {
+        // Silently skip if file doesn't exist
+      }
+    }, 1000)
+
+    // Label appearance during camera dolly-in
+    const labelTimer = setTimeout(() => {
+      setLabelVisible(true)
+      console.log('✨ "PROFILO XR" label now visible')
+    }, 4500)
+
+    // Quiz Panel delayed appearance (after camera stops + all panels lit)
+    const quizTimer = setTimeout(() => {
+      setQuizVisible(true)
+      console.log('✨ Quiz Panel now visible')
+    }, 13000)
+
+    return () => {
+      clearTimeout(voiceTimer)
+      clearTimeout(labelTimer)
+      clearTimeout(quizTimer)
+    }
   }, [vrEnabled])
   
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
+      {/* Keyframe CSS for Quiz Button Animation */}
+      <style>{`
+        @keyframes quizGlow {
+          0%, 100% {
+            box-shadow: 0 0 20px rgba(0,229,255,0.4),
+                        0 0 40px rgba(255,47,214,0.2);
+          }
+          50% {
+            box-shadow: 0 0 30px rgba(0,229,255,0.8),
+                        0 0 60px rgba(255,47,214,0.5),
+                        0 0 80px rgba(0,229,255,0.2);
+          }
+        }
+      `}</style>
+
       {/* Scene Label */}
       <div style={{
         position: 'absolute',
@@ -588,11 +833,38 @@ export default function Scene2(props: Scene2Props) {
       }}>
         <div>LYRA HUB</div>
       </div>
-      
+
+      {/* PROFILO XR Overlay - HTML2D */}
+      <div style={{
+        position: 'fixed',
+        top: '18%',
+        left: '4%',
+        fontFamily: 'Orbitron, sans-serif',
+        pointerEvents: 'none',
+        opacity: labelVisible ? 1 : 0,
+        transition: 'opacity 1.5s ease',
+        zIndex: 10
+      }}>
+        <div style={{
+          fontSize: '11px',
+          letterSpacing: '4px',
+          color: 'rgba(0,229,255,0.6)',
+          marginBottom: '6px'
+        }}>SCOPRI IL TUO</div>
+        <div style={{
+          fontSize: '28px',
+          fontWeight: '700',
+          letterSpacing: '6px',
+          color: '#00e5ff',
+          textShadow: '0 0 30px rgba(0,229,255,0.5)'
+        }}>PROFILO XR</div>
+      </div>
+
       <Canvas
         shadows
         dpr={[1, 2]}
-        gl={{ 
+        camera={{ position: [0, 8, 28], fov: 60 }}
+        gl={{
           antialias: true,
           alpha: false,
           powerPreference: 'high-performance',
@@ -604,22 +876,22 @@ export default function Scene2(props: Scene2Props) {
           // 🔥 FIX: Set shadow map type to PCFSoft for smoother shadows
           gl.shadowMap.enabled = true
           gl.shadowMap.type = THREE.PCFSoftShadowMap  // 👈 CRITICAL FIX
-          
+
           gl.capabilities.precision = 'highp'
-          
+
           console.log('🎨 Renderer setup:')
           console.log('   Precision:', gl.capabilities.precision)
           console.log('   Shadow map type: PCFSoftShadowMap ✅')
         }}
-        style={{ background: '#1a1a1c' }}
+        style={{
+          background: '#1a1a1c',
+          opacity: canvasReady ? 1 : 0,
+          transition: 'opacity 0.4s ease'
+        }}
       >
-        {/* Camera with micro-adjustment for panel focus */}
-        <PerspectiveCamera 
-          makeDefault 
-          position={[5, 2.5, 7.1]} 
-          fov={50}
-        />
-        
+        {/* Camera Intro Animation */}
+        <CameraIntroAnimation onReady={() => setCanvasReady(true)} />
+
         {/* Lighting */}
         <GalleryLighting />
         
@@ -635,29 +907,53 @@ export default function Scene2(props: Scene2Props) {
           <SpiralLamp />
           <PlanterPot />
           <BackWalls />
-          
-          {/* Lyra2 Character - ruotato verso panel, posizione ottimizzata */}
-          <group position={[1.6, 0.3, 0]} scale={3} rotation={[0, -0.12, 0]}>
+
+          {/* Circular Platform - upgrade visual */}
+          <mesh position={[0, 0.12, 0]} scale={[1, 1, 1]}>
+            <cylinderGeometry args={[5.5, 5.5, 0.18, 64, 1]} />
+            <meshStandardMaterial
+              color="#0d0d1a"
+              metalness={0.6}
+              roughness={0.3}
+            />
+          </mesh>
+
+          {/* Luminous Ring */}
+          <mesh position={[0, 0.20, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <torusGeometry args={[4.5, 0.02, 8, 128]} />
+            <meshStandardMaterial
+              color="#00e5ff"
+              emissive="#00e5ff"
+              emissiveIntensity={1.8}
+            />
+          </mesh>
+
+          {/* Lyra2 Character - repositioned LEFT side */}
+          <group position={[-1.8, 0.2, 2.5]} scale={2.6} rotation={[0, 0.2, 0]}>
             <Lyra2Character />
           </group>
-          
-          {/* 🎯 Quiz Panel - Micro Z tilt per effetto oggetto */}
-          <group rotation={[0, Math.PI / 5, 0.04]}>
-            <QuizPanel 
-              position={[-0.5, 1.6, 1.05]}
-              onStartQuiz={handleStartQuiz}
-            />
-          </group>
+
+          {/* Quiz Panel - with Float animation RIGHT side + delayed appearance */}
+          {quizVisible && (
+            <Float speed={1.2} rotationIntensity={0.05} floatIntensity={0.25}>
+              <group rotation={[0, -0.05, 0]}>
+                <QuizPanel
+                  position={[0.8, 1.2, 2.8]}
+                  onStartQuiz={handleStartQuiz}
+                />
+              </group>
+            </Float>
+          )}
         </Suspense>
-        
-        {/* 🔥 Soft ContactShadows per effetto floating */}
+
+        {/* ContactShadows - platform specific */}
         <ContactShadows
-          position={[0, 0.01, 0]}
-          opacity={0.34}              // Ridotta da 0.4 (-15%)
+          position={[0, 0.11, 0]}
+          opacity={0.35}
           scale={20}
-          blur={3.2}                  // Aumentato da 2.5
+          blur={3.2}
           far={4}
-          resolution={1024}
+          resolution={512}
           frames={1}
           color="#000000"
         />

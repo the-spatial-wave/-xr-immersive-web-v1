@@ -1,7 +1,7 @@
 // src/components/UI/QuizPanel.tsx
 // Quiz Panel - Dimensioni ottimizzate + tutto il testo
-import { Text, RoundedBox } from '@react-three/drei'
-import { useState, useMemo } from 'react'
+import { Text, RoundedBox, Html } from '@react-three/drei'
+import { useMemo } from 'react'
 import * as THREE from 'three'
 
 interface QuizPanelProps {
@@ -51,7 +51,6 @@ function createStarfieldTexture(): THREE.Texture {
 }
 
 export function QuizPanel({ position, onStartQuiz }: QuizPanelProps) {
-  const [hovered, setHovered] = useState(false)
   const starfieldTexture = useMemo(() => createStarfieldTexture(), [])
 
   return (
@@ -188,57 +187,35 @@ export function QuizPanel({ position, onStartQuiz }: QuizPanelProps) {
         in 5 domande
       </Text>
 
-      {/* CTA Button Group */}
-      <group
+      {/* CTA Button - HTML Button */}
+      <Html
         position={[0, -0.28, 0.045]}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        onClick={(e) => {
-          e.stopPropagation()
-          onStartQuiz()
-        }}
+        center
+        distanceFactor={1.5}
+        transform
       >
-        {/* Button Background */}
-        <RoundedBox args={[1.4, 0.18, 0.025]} radius={0.09} smoothness={4}>
-          <meshStandardMaterial
-            color={hovered ? "#b030d0" : "#9c27b0"}
-            emissive={hovered ? "#b030d0" : "#9c27b0"}
-            emissiveIntensity={hovered ? 0.6 : 0.4}
-            toneMapped={false}
-          />
-        </RoundedBox>
-
-        {/* Hover Glow Effect */}
-        {hovered && (
-          <RoundedBox 
-            args={[1.46, 0.22, 0.02]} 
-            radius={0.11} 
-            smoothness={4}
-            position={[0, 0, -0.013]}
-          >
-            <meshStandardMaterial
-              color="#ec407a"
-              emissive="#ec407a"
-              emissiveIntensity={1.5}
-              transparent
-              opacity={0.7}
-              toneMapped={false}
-            />
-          </RoundedBox>
-        )}
-
-        {/* Button Text */}
-        <Text
-          position={[0, 0, 0.015]}
-          fontSize={0.058}
-          color="#ffffff"
-          anchorX="center"
-          anchorY="middle"
-          fontWeight="bold"
+        <button
+          onClick={onStartQuiz}
+          style={{
+            background: 'linear-gradient(135deg, #00e5ff, #ff2fd6)',
+            border: 'none',
+            color: '#0a0a0f',
+            padding: '14px 32px',
+            borderRadius: '8px',
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: '13px',
+            fontWeight: '800',
+            letterSpacing: '2px',
+            cursor: 'pointer',
+            width: '100%',
+            textTransform: 'uppercase',
+            animation: 'quizGlow 2s ease-in-out infinite',
+            boxShadow: '0 0 20px rgba(0,229,255,0.4), 0 0 40px rgba(255,47,214,0.2)'
+          }}
         >
           INIZIA IL QUIZ →
-        </Text>
-      </group>
+        </button>
+      </Html>
 
       {/* Info Text "2 minuti" */}
       <Text
