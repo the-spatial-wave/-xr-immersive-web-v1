@@ -6,6 +6,7 @@ import { ControlsOverlay } from './components/UI/ControlsOverlay'
 import { SceneSelector } from './components/UI/SceneSelector'
 import Scene1 from './components/scenes/Scene1'
 import Scene2 from './components/scenes/Scene2'
+// import Scene2New from './components/scenes/Scene2New'
 import Scene3 from './components/scenes/Scene3'
 import Scene4 from './components/scenes/Scene4'
 import { xrStore } from './store/xrStore'
@@ -104,8 +105,8 @@ function App() {
       )}
       
       {mode === 'explore' && currentSceneId === 'scene2' && (
-        <Scene2 
-          xrStore={xrStore} 
+        <Scene2
+          xrStore={xrStore}
           vrEnabled={FEATURES.VR_ENABLED}
           onNavigate={navigateToScene}
         />
