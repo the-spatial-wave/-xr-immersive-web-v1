@@ -990,24 +990,6 @@ export default function Scene3(props: Scene3Props) {
         ← Gallery
       </button>
 
-      {/* Scene label */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '20px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          fontSize: '11px',
-          color: 'rgba(0,217,255,0.3)',
-          letterSpacing: '2px',
-          fontFamily: 'monospace',
-          pointerEvents: 'none',
-          zIndex: 20
-        }}
-      >
-        SCENE 3 — XR RESET QUIZ
-      </div>
-
       {/* Firma */}
       <div style={{
         position: 'absolute',
