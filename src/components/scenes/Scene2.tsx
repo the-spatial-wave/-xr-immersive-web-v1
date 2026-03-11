@@ -8,6 +8,7 @@ import type { XRStore } from '@react-three/xr'
 import { Suspense, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { QuizPanel } from '../UI/QuizPanel'
+import { useAppStore } from '../../store/appStore'
 
 // ================================================
 // PROPS INTERFACE
@@ -276,8 +277,8 @@ function SpiralLamp() {
 // ================================================
 function Lyra2Character() {
   const gltf = useGLTF('/models/lyra_2scena.glb')
-  const characterRef = useRef<THREE.Group>(null)
-  
+  const characterRef = useRef<THREE.Object3D>(null)
+
   useEffect(() => {
     if (!characterRef.current) return
     
@@ -758,6 +759,10 @@ export default function Scene2(props: Scene2Props) {
   const [labelVisible, setLabelVisible] = useState(false)
   const [quizVisible, setQuizVisible] = useState(false)
 
+  // Audio state from store
+  const voiceOverPlayed = useAppStore(s => s.voiceOverPlayed)
+  const setVoiceOverPlayed = useAppStore(s => s.setVoiceOverPlayed)
+
   // Handler per Quiz Panel
   const handleStartQuiz = () => {
     console.log('🎮 Starting Quiz...')
@@ -776,16 +781,21 @@ export default function Scene2(props: Scene2Props) {
     console.log(`   ✨ Shadow artifacts fix applied`)
     console.log(`   🎯 Quiz Panel integrated`)
 
-    // TODO: aggiungere /public/audio/scene2-intro.mp3
-    // Voice over after 1s
+    // Voice over after 1s (only if not already played)
     const voiceTimer = setTimeout(() => {
-      try {
-        const audio = new Audio('/audio/scene2-intro.mp3')
-        audio.play().catch(err => {
-          console.log('🔇 Voice over not available:', err.message)
-        })
-      } catch (err) {
-        // Silently skip if file doesn't exist
+      if (!voiceOverPlayed) {
+        try {
+          const audio = new Audio('/audio/lyra-embrace.mp3')
+          audio.loop = false
+          audio.volume = 0.4
+          audio.play().catch(err => {
+            console.log('🔇 Voice over not available:', err.message)
+          })
+          // Mark as played
+          setVoiceOverPlayed()
+        } catch (err) {
+          // Silently skip if file doesn't exist
+        }
       }
     }, 1000)
 

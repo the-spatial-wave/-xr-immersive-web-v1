@@ -23,7 +23,13 @@ interface AppState {
   
   // Sessione XR attiva o no
   xrSessionActive: boolean
-  
+
+  // Audio voice over gia' riprodotto
+  voiceOverPlayed: boolean
+
+  // Riferimento audio quiz ambient
+  quizAudioRef: HTMLAudioElement | null
+
   // === AZIONI (FUNCTIONS) ===
   
   // Cambia modalità (landing/explore/xr)
@@ -43,6 +49,12 @@ interface AppState {
   
   // Imposta stato sessione XR
   setXRSession: (active: boolean) => void
+
+  // Imposta voice over come riprodotto
+  setVoiceOverPlayed: () => void
+
+  // Imposta riferimento audio quiz
+  setQuizAudioRef: (ref: HTMLAudioElement | null) => void
 }
 
 // ============================================
@@ -58,7 +70,9 @@ export const useAppStore = create<AppState>((set) => ({
     sceneSelectorOpen: false          // Scene selector chiuso di default
   },
   xrSessionActive: false,             // No XR all'inizio
-  
+  voiceOverPlayed: false,             // Voice over non ancora riprodotto
+  quizAudioRef: null,                 // Nessun audio quiz attivo
+
   // === IMPLEMENTAZIONE AZIONI ===
   
   // Cambia mode
@@ -87,4 +101,10 @@ export const useAppStore = create<AppState>((set) => ({
   
   // Imposta stato XR session
   setXRSession: (active) => set({ xrSessionActive: active }),
+
+  // Imposta voice over come riprodotto
+  setVoiceOverPlayed: () => set({ voiceOverPlayed: true }),
+
+  // Imposta riferimento audio quiz
+  setQuizAudioRef: (ref) => set({ quizAudioRef: ref }),
 }))

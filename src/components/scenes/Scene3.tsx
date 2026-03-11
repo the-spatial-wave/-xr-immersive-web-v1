@@ -678,6 +678,14 @@ function ResultsOverlay({ profile, onRestart, onNavigate }: ResultsOverlayProps)
           {/* Primary CTA - appears first with pulse */}
           <button
             onClick={() => {
+              // Stop quiz ambient audio before navigation
+              const audio = useAppStore.getState().quizAudioRef
+              if (audio) {
+                audio.pause()
+                audio.currentTime = 0
+                useAppStore.getState().setQuizAudioRef(null)
+                console.log('🔇 Quiz ambient audio stopped (quiz complete)')
+              }
               useAppStore.getState().setQuizProfile(profile)
               if (onNavigate) onNavigate(4)
             }}
@@ -774,6 +782,9 @@ export default function Scene3(props: Scene3Props) {
   const mode = useAppStore((s) => s.mode)
   const vrEnabled = props.vrEnabled ?? false
 
+  // Audio state from store
+  const setQuizAudioRef = useAppStore((s) => s.setQuizAudioRef)
+
   // Quiz State
   const [showIntro, setShowIntro] = useState(true)
   const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -802,6 +813,29 @@ export default function Scene3(props: Scene3Props) {
 
   useEffect(() => {
     console.log('📍 SCENE 3 LOADED — XR Reset Quiz')
+  }, [])
+
+  // Quiz ambient audio - start on mount, cleanup on unmount
+  useEffect(() => {
+    const audio = new Audio('/audio/quiz_ambient.mp3')
+    audio.loop = true
+    audio.volume = 0.35
+
+    audio.play().catch(err => {
+      console.log('🔇 Quiz ambient audio not available:', err.message)
+    })
+
+    // Store ref in global state
+    setQuizAudioRef(audio)
+    console.log('🎵 Quiz ambient audio started (loop, volume 0.35)')
+
+    // Cleanup: pause audio and clear ref on unmount
+    return () => {
+      audio.pause()
+      audio.currentTime = 0
+      setQuizAudioRef(null)
+      console.log('🔇 Quiz ambient audio stopped (unmount)')
+    }
   }, [])
 
   // Answer Handler
