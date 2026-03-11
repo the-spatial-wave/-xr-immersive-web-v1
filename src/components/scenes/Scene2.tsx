@@ -5,7 +5,7 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { OrbitControls, ContactShadows, useGLTF, Float, Html } from '@react-three/drei'
 import type { XRStore } from '@react-three/xr'
-import { Suspense, useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { QuizPanel } from '../UI/QuizPanel'
 import { useAppStore } from '../../store/appStore'
@@ -819,8 +819,8 @@ export default function Scene2(props: Scene2Props) {
   const vrEnabled = props.vrEnabled ?? false
   const { onNavigate } = props
 
-  // Mobile detection for responsive camera and layout
-  const isMobile = window.innerWidth < 768
+  // Mobile detection for responsive camera and layout - memoized to ensure stable value
+  const isMobile = useMemo(() => window.innerWidth < 768, [])
 
   // Canvas ready state to prevent first-frame bug
   const [canvasReady, setCanvasReady] = useState(false)

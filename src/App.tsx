@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useAppStore } from './store/appStore'
 import { useDesktopControls } from './hooks/useDesktopControls'
 import { Landing } from './components/Landing/Landing'
@@ -19,10 +19,13 @@ function App() {
   const quizProfile = useAppStore(s => s.quizProfile)
   const sceneSelectorOpen = useAppStore(s => s.ui.sceneSelectorOpen)
   const setScene = useAppStore(s => s.setScene)
-  
+
+  // Transitioning state for scene changes
+  const [transitioning, setTransitioning] = useState(false)
+
   useDesktopControls()
   
-  // 🎯 Navigation handler for scene transitions
+  // Navigation handler for scene transitions with WebGL cleanup delay
   const navigateToScene = (sceneNumber: number) => {
     console.log(`🎬 Navigating to Scene ${sceneNumber}`)
 
@@ -32,28 +35,69 @@ function App() {
       3: 'scene3',
       4: 'scene4'
     }
-    
+
     const sceneId = sceneMap[sceneNumber]
 
     if (sceneId) {
-      setScene(sceneId)
+      // Add transition overlay when navigating to Scene4 to allow WebGL cleanup
+      if (sceneNumber === 4) {
+        console.log('⏳ Starting transition overlay for WebGL cleanup...')
+
+        // Step 1: Show black overlay
+        setTransitioning(true)
+
+        // Step 2: After 800ms, change scene
+        setTimeout(() => {
+          setScene(sceneId)
+
+          // Step 3: After another 300ms, hide overlay with fade-out
+          setTimeout(() => {
+            setTransitioning(false)
+          }, 300)
+        }, 800)
+      } else {
+        setScene(sceneId)
+      }
     } else {
       console.warn(`⚠️ Scene ${sceneNumber} not implemented yet`)
     }
   }
   
-  // 🚧 VR MASTER GUARD
+  // WebGL context loss handler - graceful recovery
+  useEffect(() => {
+    const handleContextLost = (event: Event) => {
+      event.preventDefault()
+      console.warn('⚠️ WebGL context lost - preventing default behavior')
+    }
+
+    const handleContextRestored = () => {
+      console.log('✅ WebGL context restored')
+      // Force scene reload if needed
+      const current = useAppStore.getState().currentSceneId
+      useAppStore.getState().setScene(current)
+    }
+
+    window.addEventListener('webglcontextlost', handleContextLost)
+    window.addEventListener('webglcontextrestored', handleContextRestored)
+
+    return () => {
+      window.removeEventListener('webglcontextlost', handleContextLost)
+      window.removeEventListener('webglcontextrestored', handleContextRestored)
+    }
+  }, [])
+
+  // VR MASTER GUARD
   useEffect(() => {
     if (!FEATURES.VR_ENABLED && mode === 'xr') {
       console.warn('⚠️ VR Mode blocked - Feature disabled in config/features.ts')
-      
+
       alert(
         "🚧 VR Mode Coming Soon!\n\n" +
         "Stiamo lavorando a un'esperienza VR completa.\n" +
         "Per ora LYRA Hub è disponibile in Desktop mode.\n\n" +
         "Stay tuned! 🚀"
       )
-      
+
       useAppStore.getState().setMode('explore')
     }
   }, [mode])
@@ -69,12 +113,12 @@ function App() {
       {/* Scene Selector Modal */}
       {sceneSelectorOpen && <SceneSelector />}
       
-      {/* 🥽 VR Mode Indicator - Solo se feature enabled */}
+      {/* VR Mode Indicator - Solo se feature enabled */}
       {FEATURES.VR_ENABLED && mode === 'xr' && (
-        <div style={{ 
-          position: 'fixed', 
-          top: 20, 
-          left: '50%', 
+        <div style={{
+          position: 'fixed',
+          top: 20,
+          left: '50%',
           transform: 'translateX(-50%)',
           zIndex: 1000,
           background: 'rgba(0,255,255,0.15)',
@@ -87,12 +131,27 @@ function App() {
           backdropFilter: 'blur(10px)',
           pointerEvents: 'none'
         }}>
-          🥽 VR Mode Active
+          VR Mode Active
         </div>
       )}
-      
-      {/* 
-        🎬 SCENE RENDERING - WITH NAVIGATION FIX
+
+      {/* Transition Overlay - WebGL cleanup during scene changes */}
+      {transitioning && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          width: '100vw',
+          height: '100vh',
+          background: '#000',
+          zIndex: 9999,
+          opacity: transitioning ? 1 : 0,
+          transition: 'opacity 400ms ease-in-out',
+          pointerEvents: 'none'
+        }} />
+      )}
+
+      {/*
+        SCENE RENDERING - WITH NAVIGATION FIX
         Importante: onNavigate prop aggiunto a tutte le scene
       */}
       

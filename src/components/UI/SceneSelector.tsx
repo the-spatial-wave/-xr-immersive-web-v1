@@ -37,7 +37,8 @@ export function SceneSelector() {
         {/* Header */}
         <div className="scene-selector-header">
           <h2 className="modal-title">Seleziona Scena</h2>
-          <button 
+          <p className="modal-subtitle">L'Immersive Web non si visita. Si costruisce.</p>
+          <button
             className="close-btn"
             onClick={toggleSceneSelector}
             aria-label="Close"
@@ -49,32 +50,34 @@ export function SceneSelector() {
         {/* Scene Cards Grid */}
         <div className="scene-cards-grid">
           
-          {/* SCENE 1 - THIS IS THE GAME CHANGER */}
-          <div 
+          {/* SCENE 1 - MEET LYRA */}
+          <div
             className={`scene-card ${currentSceneId === 'scene1' ? 'active' : ''}`}
             onClick={() => handleSceneEnter('scene1', true)}
           >
             <div className="scene-thumbnail">
-              {currentSceneId === 'scene1' && (
+              {currentSceneId === 'scene1' ? (
                 <div className="scene-badge active">IN CORSO</div>
+              ) : (
+                <div className="scene-badge available">PRIMA ESPERIENZA</div>
               )}
             </div>
-            
+
             <div className="scene-content">
-              <h3 className="scene-title">THIS IS THE GAME CHANGER</h3>
+              <h3 className="scene-title">MEET LYRA</h3>
               <p className="scene-subtitle">
-                Incontra Lyra, il tuo assistente AI, in uno spazio immersivo 
-                dove esplorazione e intelligenza artificiale si incontrano
+                Entra nello spazio dove inizia il percorso XR.
+                Lyra ti accoglie e ti guida nel primo ambiente dell'Immersive Web.
               </p>
-              
+
               <button className="scene-enter-btn">
-                {currentSceneId === 'scene1' ? 'Attiva' : 'Enter'}
+                {currentSceneId === 'scene1' ? 'Attiva' : 'ENTRA NELLO SPAZIO'}
               </button>
             </div>
           </div>
           
-          {/* SCENE 2 - XR RESET (AGGIORNATA) */}
-          <div 
+          {/* SCENE 2 - XR RESET */}
+          <div
             className={`scene-card ${currentSceneId === 'scene2' ? 'active' : ''}`}
             onClick={() => handleSceneEnter('scene2', true)}
           >
@@ -85,41 +88,40 @@ export function SceneSelector() {
                 <div className="scene-badge available">DISPONIBILE</div>
               )}
             </div>
-            
+
             <div className="scene-content">
               <h3 className="scene-title">XR RESET</h3>
-              <h4 className="scene-tagline">Quiz Gallery</h4>
               <p className="scene-subtitle">
-                Incontra LYRA e inizia il quiz interattivo. 
-                5 domande per scoprire il tuo percorso nella realtà estesa.
+                Scopri il tuo profilo XR e inizia a costruire la tua prima scena immersiva.
+                Il percorso ti guida passo dopo passo dalla scena alla pubblicazione.
               </p>
-              
+
               <button className="scene-enter-btn">
-                {currentSceneId === 'scene2' ? 'Attiva' : 'ENTRA NELLA GALLERY'}
+                {currentSceneId === 'scene2' ? 'Attiva' : 'INIZIA IL QUIZ'}
               </button>
-              
-              <div className="scene-info">2 minuti • Esperienza 3D</div>
+
+              <div className="scene-info">5 domande · 2 minuti</div>
             </div>
           </div>
           
           {/* SCENE 3 - SHOWROOM */}
-          <div 
+          <div
             className="scene-card disabled"
             onClick={() => handleSceneEnter('scene3', false)}
           >
             <div className="scene-thumbnail">
               <div className="scene-badge coming-soon">COMING SOON</div>
             </div>
-            
+
             <div className="scene-content">
               <h3 className="scene-title">SHOWROOM</h3>
               <p className="scene-subtitle">
-                Esplora progetti, creazioni e portfolio in uno 
-                spazio dedicato con controlli interattivi
+                Uno spazio dedicato ai progetti della community.
+                Le scene create dagli Immersive Creators appariranno qui.
               </p>
-              
+
               <button className="scene-enter-btn" disabled>
-                Prossimamente
+                PROSSIMAMENTE
               </button>
             </div>
           </div>

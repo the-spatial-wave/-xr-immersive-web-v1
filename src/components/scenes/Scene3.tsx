@@ -842,12 +842,13 @@ export default function Scene3(props: Scene3Props) {
     setQuizAudioRef(audio)
     console.log('🎵 Quiz ambient audio started (loop, volume 0.35)')
 
-    // Cleanup: pause audio and clear ref on unmount
+    // Cleanup: pause audio, clear source and ref on unmount
     return () => {
       audio.pause()
+      audio.src = ''
       audio.currentTime = 0
       setQuizAudioRef(null)
-      console.log('🔇 Quiz ambient audio stopped (unmount)')
+      console.log('🔇 Quiz ambient audio stopped and cleared (unmount)')
     }
   }, [])
 
