@@ -709,10 +709,18 @@ function LoadingFallback() {
 // ================================================
 // CAMERA INTRO ANIMATION - Zoom from far to close
 // ================================================
-function CameraIntroAnimation({ onReady }: { onReady: () => void }) {
+function CameraIntroAnimation({ onReady, isMobile }: { onReady: () => void; isMobile: boolean }) {
   const { camera } = useThree()
   const [cameraAnimating, setCameraAnimating] = useState(true)
   const hasStarted = useRef(false)
+
+  // Set FOV on mount based on device type
+  useEffect(() => {
+    if ('fov' in camera) {
+      camera.fov = isMobile ? 75 : 60
+      camera.updateProjectionMatrix()
+    }
+  }, [camera, isMobile])
 
   // Animate camera with lerp
   useFrame(() => {
@@ -720,11 +728,12 @@ function CameraIntroAnimation({ onReady }: { onReady: () => void }) {
     if (!hasStarted.current) {
       hasStarted.current = true
       onReady()
-      console.log('📹 Camera intro animation started - zooming from [0, 8, 28]')
+      console.log(`📹 Camera intro animation started - zooming from [0, 8, 28] (${isMobile ? 'Mobile' : 'Desktop'})`)
     }
 
     if (cameraAnimating) {
-      const target = new THREE.Vector3(0, 1.5, 7)
+      // Responsive target position: mobile needs more distance
+      const target = new THREE.Vector3(0, 1.5, isMobile ? 10 : 7)
 
       // Lerp camera position
       camera.position.x = THREE.MathUtils.lerp(camera.position.x, target.x, 0.045)
@@ -737,7 +746,8 @@ function CameraIntroAnimation({ onReady }: { onReady: () => void }) {
       // Stop animation when close enough to target
       if (camera.position.distanceTo(target) < 0.1) {
         setCameraAnimating(false)
-        console.log('📹 Camera intro animation complete - reached target [0, 1.5, 7]')
+        const targetPos = isMobile ? '[0, 1.5, 10]' : '[0, 1.5, 7]'
+        console.log(`📹 Camera intro animation complete - reached target ${targetPos}`)
       }
     }
   })
@@ -751,6 +761,9 @@ function CameraIntroAnimation({ onReady }: { onReady: () => void }) {
 export default function Scene2(props: Scene2Props) {
   const vrEnabled = props.vrEnabled ?? false
   const { onNavigate } = props
+
+  // Mobile detection for responsive camera and layout
+  const isMobile = window.innerWidth < 768
 
   // Canvas ready state to prevent first-frame bug
   const [canvasReady, setCanvasReady] = useState(false)
@@ -854,11 +867,11 @@ export default function Scene2(props: Scene2Props) {
         <div>LYRA HUB</div>
       </div>
 
-      {/* PROFILO XR Overlay - HTML2D */}
+      {/* PROFILO XR Overlay - HTML2D (responsive) */}
       <div style={{
         position: 'fixed',
-        top: '18%',
-        left: '4%',
+        top: isMobile ? '12%' : '18%',
+        left: isMobile ? '3%' : '4%',
         fontFamily: 'Orbitron, sans-serif',
         pointerEvents: 'none',
         opacity: labelVisible ? 1 : 0,
@@ -866,15 +879,15 @@ export default function Scene2(props: Scene2Props) {
         zIndex: 10
       }}>
         <div style={{
-          fontSize: '11px',
-          letterSpacing: '4px',
+          fontSize: isMobile ? '8px' : '11px',
+          letterSpacing: isMobile ? '2px' : '4px',
           color: 'rgba(0,229,255,0.6)',
-          marginBottom: '6px'
+          marginBottom: isMobile ? '3px' : '6px'
         }}>SCOPRI IL TUO</div>
         <div style={{
-          fontSize: '28px',
+          fontSize: isMobile ? '18px' : '28px',
           fontWeight: '700',
-          letterSpacing: '6px',
+          letterSpacing: isMobile ? '3px' : '6px',
           color: '#00e5ff',
           textShadow: '0 0 30px rgba(0,229,255,0.5)'
         }}>PROFILO XR</div>
@@ -951,7 +964,7 @@ export default function Scene2(props: Scene2Props) {
         }}
       >
         {/* Camera Intro Animation */}
-        <CameraIntroAnimation onReady={() => setCanvasReady(true)} />
+        <CameraIntroAnimation onReady={() => setCanvasReady(true)} isMobile={isMobile} />
 
         {/* Lighting */}
         <GalleryLighting />
@@ -989,8 +1002,8 @@ export default function Scene2(props: Scene2Props) {
             />
           </mesh>
 
-          {/* Lyra2 Character - repositioned LEFT side */}
-          <group position={[-1.8, 0.2, 2.5]} scale={2.6} rotation={[0, 0.2, 0]}>
+          {/* Lyra2 Character - repositioned LEFT side (responsive position) */}
+          <group position={isMobile ? [-0.5, 0.2, 2.5] : [-1.8, 0.2, 2.5]} scale={2.6} rotation={[0, 0.2, 0]}>
             <Lyra2Character />
           </group>
 
