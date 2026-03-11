@@ -49,6 +49,7 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
           border: `1px solid ${data.color}4D`,
           borderRadius: '16px',
           padding: '40px',
+          paddingBottom: '60px',
           maxWidth: '520px',
           width: '90%',
           display: 'flex',
