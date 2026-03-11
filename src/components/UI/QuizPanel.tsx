@@ -194,8 +194,19 @@ export function QuizPanel({ position, onStartQuiz }: QuizPanelProps) {
         distanceFactor={1.5}
         transform
       >
+        <style>{`
+          @media (max-width: 480px) {
+            .quiz-button-responsive {
+              font-size: 13px !important;
+              padding: 10px 16px !important;
+              letter-spacing: 1px !important;
+              white-space: nowrap !important;
+            }
+          }
+        `}</style>
         <button
           onClick={onStartQuiz}
+          className="quiz-button-responsive"
           style={{
             background: 'linear-gradient(135deg, #00e5ff, #ff2fd6)',
             border: 'none',
@@ -213,7 +224,7 @@ export function QuizPanel({ position, onStartQuiz }: QuizPanelProps) {
             boxShadow: '0 0 20px rgba(0,229,255,0.4), 0 0 40px rgba(255,47,214,0.2)'
           }}
         >
-          INIZIA IL QUIZ →
+          SCOPRI IL TUO PROFILO XR
         </button>
       </Html>
 

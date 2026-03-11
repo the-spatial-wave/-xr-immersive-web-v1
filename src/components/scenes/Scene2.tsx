@@ -570,6 +570,8 @@ function LEDPanel({ position, width, color, label, subtitle, visible, texture: _
         position={[0, 0, depth / 2 + 0.1]}
         transform
         distanceFactor={2.5}
+        occlude={false}
+        zIndexRange={[1, 10]}
       >
         <div style={{
           textAlign: 'center',
@@ -1007,12 +1009,12 @@ export default function Scene2(props: Scene2Props) {
             <Lyra2Character />
           </group>
 
-          {/* Quiz Panel - with Float animation RIGHT side + delayed appearance */}
+          {/* Quiz Panel - with Float animation RIGHT side + delayed appearance (responsive Z) */}
           {quizVisible && (
             <Float speed={1.2} rotationIntensity={0.05} floatIntensity={0.25}>
               <group rotation={[0, -0.05, 0]}>
                 <QuizPanel
-                  position={[0.8, 1.2, 2.8]}
+                  position={isMobile ? [0.8, 1.2, 1.3] : [0.8, 1.2, 2.8]}
                   onStartQuiz={handleStartQuiz}
                 />
               </group>

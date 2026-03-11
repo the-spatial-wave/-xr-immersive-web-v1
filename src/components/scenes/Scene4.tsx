@@ -117,6 +117,20 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
           {data.message}
         </div>
 
+        {/* Intro testo prima del bundle */}
+        <div
+          style={{
+            fontSize: '13px',
+            color: 'rgba(255,255,255,0.5)',
+            textAlign: 'center',
+            marginBottom: '16px',
+            lineHeight: 1.6
+          }}
+        >
+          Creato per designer e creator che vogliono<br />
+          pubblicare la loro prima esperienza XR in pochi giorni.
+        </div>
+
         {/* 6. Box benefici */}
         <div
           style={{

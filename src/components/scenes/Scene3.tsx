@@ -427,6 +427,19 @@ function QuizOverlay({
         >
           {question.text}
         </div>
+
+        {/* Micro hint */}
+        <div
+          style={{
+            fontSize: '11px',
+            color: 'rgba(255,255,255,0.3)',
+            fontStyle: 'italic',
+            textAlign: 'center',
+            marginTop: '8px'
+          }}
+        >
+          Non pensarci troppo. Segui l'istinto.
+        </div>
       </div>
 
       {/* Answer Grid */}
@@ -982,8 +995,9 @@ export default function Scene3(props: Scene3Props) {
         {/* 4. Meta info */}
         <div
           style={{
-            fontSize: '12px',
-            color: 'rgba(255,255,255,0.35)',
+            fontSize: '14px',
+            color: 'rgba(255,255,255,0.7)',
+            fontWeight: 600,
             letterSpacing: '1px',
             marginBottom: '20px'
           }}
@@ -1030,7 +1044,7 @@ export default function Scene3(props: Scene3Props) {
             marginBottom: '12px'
           }}
         >
-          INIZIA IL TEST →
+          SCOPRI IL TUO PROFILO XR
         </button>
 
         {/* 7. Link torna */}
