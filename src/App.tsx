@@ -135,6 +135,36 @@ function App() {
         </div>
       )}
 
+      {/* Global Signature - Always visible except in Landing */}
+      {mode !== 'landing' && (
+        <div style={{
+          position: 'fixed',
+          bottom: '20px',
+          right: '20px',
+          zIndex: 60,
+          textAlign: 'right',
+          pointerEvents: 'none'
+        }}>
+          <div style={{
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: '13px',
+            fontWeight: 600,
+            color: '#C8CCD6',
+            marginBottom: '4px'
+          }}>
+            Lyra Hub
+          </div>
+          <div style={{
+            fontFamily: 'Manrope, sans-serif',
+            fontSize: '10px',
+            color: 'rgba(183,192,204,0.4)',
+            letterSpacing: '1px'
+          }}>
+            An experience by The Spatial Wave
+          </div>
+        </div>
+      )}
+
       {/* Transition Overlay - WebGL cleanup during scene changes */}
       {transitioning && (
         <div style={{

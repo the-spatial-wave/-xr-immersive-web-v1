@@ -1,7 +1,7 @@
 // src/components/UI/QuizPanel.tsx
 // Quiz Panel - Dimensioni ottimizzate + tutto il testo
 import { Text, RoundedBox, Html } from '@react-three/drei'
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import * as THREE from 'three'
 
 interface QuizPanelProps {
@@ -52,6 +52,28 @@ function createStarfieldTexture(): THREE.Texture {
 
 export function QuizPanel({ position, onStartQuiz }: QuizPanelProps) {
   const starfieldTexture = useMemo(() => createStarfieldTexture(), [])
+
+  // Inject pulse animation keyframes once
+  useEffect(() => {
+    const styleId = 'quiz-pulse-keyframes'
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style')
+      style.id = styleId
+      style.textContent = `
+        @keyframes pulseBtn {
+          0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 20px rgba(0,229,255,0.4), 0 0 40px rgba(255,47,214,0.2);
+          }
+          50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(0,229,255,0.7), 0 0 60px rgba(255,47,214,0.4);
+          }
+        }
+      `
+      document.head.appendChild(style)
+    }
+  }, [])
 
   return (
     <group position={position}>
@@ -207,6 +229,10 @@ export function QuizPanel({ position, onStartQuiz }: QuizPanelProps) {
               white-space: nowrap !important;
             }
           }
+          .quiz-button-responsive:hover,
+          .quiz-button-responsive:active {
+            animation: none !important;
+          }
         `}</style>
         <button
           onClick={onStartQuiz}
@@ -224,7 +250,7 @@ export function QuizPanel({ position, onStartQuiz }: QuizPanelProps) {
             cursor: 'pointer',
             width: '100%',
             textTransform: 'uppercase',
-            animation: 'quizGlow 2s ease-in-out infinite',
+            animation: 'pulseBtn 1.8s ease-in-out infinite',
             boxShadow: '0 0 20px rgba(0,229,255,0.4), 0 0 40px rgba(255,47,214,0.2)'
           }}
         >

@@ -833,6 +833,9 @@ export default function Scene2(props: Scene2Props) {
   const voiceOverPlayed = useAppStore(s => s.voiceOverPlayed)
   const setVoiceOverPlayed = useAppStore(s => s.setVoiceOverPlayed)
 
+  // Audio ref for cleanup on unmount
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+
   // Handler per Quiz Panel
   const handleStartQuiz = () => {
     console.log('🎮 Starting Quiz...')
@@ -858,6 +861,7 @@ export default function Scene2(props: Scene2Props) {
           const audio = new Audio('/audio/lyra-embrace.mp3')
           audio.loop = false
           audio.volume = 0.4
+          audioRef.current = audio
           audio.play().catch(err => {
             console.log('🔇 Voice over not available:', err.message)
           })
@@ -885,6 +889,15 @@ export default function Scene2(props: Scene2Props) {
       clearTimeout(voiceTimer)
       clearTimeout(labelTimer)
       clearTimeout(quizTimer)
+
+      // Cleanup audio on unmount
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current.currentTime = 0
+        audioRef.current.src = ''
+        audioRef.current = null
+        console.log('🔇 Scene2 voice over stopped (unmount)')
+      }
     }
   }, [vrEnabled])
   
@@ -1103,24 +1116,6 @@ export default function Scene2(props: Scene2Props) {
           enablePan={true}
         />
       </Canvas>
-
-      {/* Firma */}
-      <div style={{
-        position: 'absolute',
-        bottom: '20px',
-        right: '20px',
-        zIndex: 100,
-        textAlign: 'right',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '11px',
-        color: 'rgba(255,255,255,0.6)',
-        lineHeight: 1.5,
-        letterSpacing: '0.5px',
-        pointerEvents: 'none'
-      }}>
-        <div style={{ fontWeight: 600, marginBottom: '2px' }}>Lyra Hub</div>
-        <div style={{ fontSize: '10px', opacity: 0.85 }}>An experience by The Spatial Wave</div>
-      </div>
     </div>
   )
 }

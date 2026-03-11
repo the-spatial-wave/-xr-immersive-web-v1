@@ -6,8 +6,8 @@ export function ControlsOverlay() {
   const toggleSceneSelector = useAppStore(s => s.toggleSceneSelector)
   const currentSceneId = useAppStore(s => s.currentSceneId)
 
-  // Hide controls in Scene4 (quiz results/CTA page)
-  if (currentSceneId === 'scene4') {
+  // Hide controls in Scene3 (quiz) and Scene4 (quiz results/CTA page)
+  if (currentSceneId === 'scene3' || currentSceneId === 'scene4') {
     return null
   }
 

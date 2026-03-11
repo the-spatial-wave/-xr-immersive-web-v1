@@ -346,18 +346,22 @@ function MobileHUD({ onNavigate }: { onNavigate?: (sceneNumber: number) => void 
         marginBottom: '8px',
         fontWeight: '600'
       }}>
-        SCENA XR REALE
+        SCENA XR IMMERSIVA
       </div>
 
-      {/* Title */}
+      {/* Body Text */}
       <div style={{
-        fontSize: '13px',
-        fontWeight: '700',
+        fontSize: '12px',
+        fontWeight: '400',
         color: '#E8ECF0',
         marginBottom: '12px',
-        lineHeight: '1.4'
+        lineHeight: '1.5'
       }}>
-        Questa scena gira nel browser.
+        Questa non e un video.
+        E uno spazio 3D reale che vive nel tuo browser.
+        <br/><br/>
+        Muoviti nella scena, esplora e scopri
+        come creare la tua esperienza XR.
       </div>
 
       {/* CTA Button */}
@@ -377,7 +381,7 @@ function MobileHUD({ onNavigate }: { onNavigate?: (sceneNumber: number) => void 
           textTransform: 'uppercase'
         }}
       >
-        SCOPRI IL PERCORSO →
+        ENTRA NEL PERCORSO →
       </button>
     </div>
   )
@@ -513,24 +517,6 @@ export default function Scene1(props: Scene1Props) {
 
       {/* Mobile HUD - Fixed 2D overlay */}
       {isMobile && <MobileHUD onNavigate={props.onNavigate} />}
-
-      {/* Firma */}
-      <div style={{
-        position: 'absolute',
-        bottom: '20px',
-        right: '20px',
-        zIndex: 100,
-        textAlign: 'right',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '11px',
-        color: 'rgba(255,255,255,0.6)',
-        lineHeight: 1.5,
-        letterSpacing: '0.5px',
-        pointerEvents: 'none'
-      }}>
-        <div style={{ fontWeight: 600, marginBottom: '2px' }}>Lyra Hub</div>
-        <div style={{ fontSize: '10px', opacity: 0.85 }}>An experience by The Spatial Wave</div>
-      </div>
     </div>
   )
 }

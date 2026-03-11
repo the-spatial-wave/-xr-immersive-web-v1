@@ -1159,57 +1159,6 @@ export default function Scene3(props: Scene3Props) {
           </div>
         )
       )}
-
-      {/* Back button */}
-      <button
-        onClick={() => handleNavigate(2)}
-        style={{
-          position: 'absolute',
-          top: '20px',
-          left: '20px',
-          background: 'rgba(0,0,0,0.4)',
-          border: '1px solid rgba(255,255,255,0.12)',
-          borderRadius: '8px',
-          color: 'rgba(255,255,255,0.5)',
-          fontSize: '13px',
-          padding: '8px 14px',
-          cursor: 'pointer',
-          backdropFilter: 'blur(8px)',
-          transition: 'all 0.2s',
-          zIndex: 20,
-          letterSpacing: '0.5px'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.color = 'rgba(255,255,255,0.85)'
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.25)'
-          e.currentTarget.style.background = 'rgba(0,0,0,0.6)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.color = 'rgba(255,255,255,0.5)'
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'
-          e.currentTarget.style.background = 'rgba(0,0,0,0.4)'
-        }}
-      >
-        ← Gallery
-      </button>
-
-      {/* Firma */}
-      <div style={{
-        position: 'absolute',
-        bottom: '20px',
-        right: '20px',
-        zIndex: 100,
-        textAlign: 'right',
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '11px',
-        color: 'rgba(255,255,255,0.6)',
-        lineHeight: 1.5,
-        letterSpacing: '0.5px',
-        pointerEvents: 'none'
-      }}>
-        <div style={{ fontWeight: 600, marginBottom: '2px' }}>Lyra Hub</div>
-        <div style={{ fontSize: '10px', opacity: 0.85 }}>An experience by The Spatial Wave</div>
-      </div>
     </div>
   )
 }
