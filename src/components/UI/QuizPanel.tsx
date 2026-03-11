@@ -193,6 +193,10 @@ export function QuizPanel({ position, onStartQuiz }: QuizPanelProps) {
         center
         distanceFactor={1.5}
         transform
+        style={{
+          opacity: 1,
+          transition: 'opacity 0.6s ease-in'
+        }}
       >
         <style>{`
           @media (max-width: 480px) {

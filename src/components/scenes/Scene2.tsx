@@ -758,6 +758,61 @@ function CameraIntroAnimation({ onReady, isMobile }: { onReady: () => void; isMo
 }
 
 // ================================================
+// CAMERA QUIZ FOCUS - Auto-focus on quiz panel when visible
+// ================================================
+function CameraQuizFocus({ quizVisible, isMobile }: { quizVisible: boolean; isMobile: boolean }) {
+  const { camera } = useThree()
+  const cameraFocused = useRef(false)
+  const [focusState, setFocusState] = useState<'idle' | 'focusing' | 'releasing' | 'done'>('idle')
+  const focusStartTime = useRef(0)
+
+  useEffect(() => {
+    if (quizVisible && !cameraFocused.current) {
+      // Wait 5s after quiz becomes visible, then start focus
+      const focusTimer = setTimeout(() => {
+        setFocusState('focusing')
+        focusStartTime.current = Date.now()
+        console.log('📹 Camera focusing on quiz panel...')
+      }, 5000)
+
+      return () => clearTimeout(focusTimer)
+    }
+  }, [quizVisible])
+
+  useFrame(() => {
+    if (focusState === 'focusing') {
+      const target = new THREE.Vector3(0.8, 1.5, isMobile ? 4 : 5)
+
+      // Lerp camera towards quiz panel
+      camera.position.x = THREE.MathUtils.lerp(camera.position.x, target.x, 0.06)
+      camera.position.y = THREE.MathUtils.lerp(camera.position.y, target.y, 0.06)
+      camera.position.z = THREE.MathUtils.lerp(camera.position.z, target.z, 0.06)
+
+      camera.lookAt(0.8, 1.2, 0)
+
+      // Check distance to target, stop when close enough
+      const distance = camera.position.distanceTo(target)
+      if (distance < 0.01) {
+        setFocusState('releasing')
+        focusStartTime.current = Date.now()
+        console.log('📹 Camera focus complete, releasing control...')
+      }
+    } else if (focusState === 'releasing') {
+      const elapsed = Date.now() - focusStartTime.current
+
+      // After 2s of release time, mark as done
+      if (elapsed > 2000) {
+        setFocusState('done')
+        cameraFocused.current = true
+        console.log('📹 Camera control released')
+      }
+    }
+  })
+
+  return null
+}
+
+// ================================================
 // MAIN SCENE 2 - SHADOW FIX VERSION + QUIZ PANEL + SIGNATURE
 // ================================================
 export default function Scene2(props: Scene2Props) {
@@ -967,6 +1022,9 @@ export default function Scene2(props: Scene2Props) {
       >
         {/* Camera Intro Animation */}
         <CameraIntroAnimation onReady={() => setCanvasReady(true)} isMobile={isMobile} />
+
+        {/* Camera Quiz Focus - auto-focus on quiz panel when visible */}
+        <CameraQuizFocus quizVisible={quizVisible} isMobile={isMobile} />
 
         {/* Lighting */}
         <GalleryLighting />

@@ -4,6 +4,12 @@ import './ControlsOverlay.css'
 export function ControlsOverlay() {
   const setMode = useAppStore(s => s.setMode)
   const toggleSceneSelector = useAppStore(s => s.toggleSceneSelector)
+  const currentSceneId = useAppStore(s => s.currentSceneId)
+
+  // Hide controls in Scene4 (quiz results/CTA page)
+  if (currentSceneId === 'scene4') {
+    return null
+  }
 
   return (
     <div className="controls-overlay">
