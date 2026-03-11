@@ -512,7 +512,7 @@ function LEDPanel({ position, width, color, label, subtitle, visible, texture: _
   const frameDepth = 0.05
 
   return (
-    <group position={position}>
+    <group position={position} scale={[1.2, 1.2, 1]}>
       {/* Main panel - dark background */}
       <mesh receiveShadow>
         <boxGeometry args={[width, height, depth]} />
@@ -568,7 +568,7 @@ function LEDPanel({ position, width, color, label, subtitle, visible, texture: _
         center
         position={[0, 0, depth / 2 + 0.1]}
         transform
-        distanceFactor={5}
+        distanceFactor={2.5}
       >
         <div style={{
           textAlign: 'center',
@@ -581,10 +581,10 @@ function LEDPanel({ position, width, color, label, subtitle, visible, texture: _
           {label === 'THE SPATIAL WAVE' ? (
             <div style={{
               fontFamily: 'Orbitron, sans-serif',
-              fontSize: '12px',
+              fontSize: '20px',
               fontWeight: 700,
               color: color,
-              letterSpacing: '2px',
+              letterSpacing: '3px',
               marginBottom: '8px',
               opacity: 1.0,
               textShadow: `0 0 12px ${color}`
@@ -595,7 +595,7 @@ function LEDPanel({ position, width, color, label, subtitle, visible, texture: _
           ) : (
             <div style={{
               fontFamily: 'Orbitron, sans-serif',
-              fontSize: '16px',
+              fontSize: '20px',
               fontWeight: 700,
               color: color,
               letterSpacing: '3px',
@@ -610,12 +610,18 @@ function LEDPanel({ position, width, color, label, subtitle, visible, texture: _
           {/* Subtitle */}
           <div style={{
             fontFamily: 'Manrope, sans-serif',
-            fontSize: '11px',
-            color: 'rgba(255,255,255,0.85)',
+            fontSize: '18px',
+            color: '#ffffff',
+            opacity: 0.9,
             letterSpacing: '0.5px',
             display: 'block',
-            marginTop: '6px',
-            lineHeight: 1.4
+            marginTop: '10px',
+            lineHeight: '1.5',
+            maxWidth: '180px',
+            textAlign: 'center',
+            whiteSpace: 'normal',
+            wordBreak: 'break-word',
+            textShadow: '0 1px 4px rgba(0,0,0,0.8)'
           }}>
             {subtitle}
           </div>
@@ -817,6 +823,10 @@ export default function Scene2(props: Scene2Props) {
                         0 0 80px rgba(0,229,255,0.2);
           }
         }
+        @keyframes spin {
+          from { transform: rotate(0deg); }
+          to   { transform: rotate(360deg); }
+        }
       `}</style>
 
       {/* Scene Label */}
@@ -859,6 +869,47 @@ export default function Scene2(props: Scene2Props) {
           textShadow: '0 0 30px rgba(0,229,255,0.5)'
         }}>PROFILO XR</div>
       </div>
+
+      {/* Loading Screen */}
+      {!canvasReady && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          background: '#0a0a0f',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 50,
+          gap: '20px'
+        }}>
+          <div style={{
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: '11px',
+            letterSpacing: '4px',
+            color: 'rgba(0,229,255,0.6)',
+            textTransform: 'uppercase'
+          }}>
+            LYRA HUB
+          </div>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            border: '2px solid rgba(0,229,255,0.15)',
+            borderTop: '2px solid #00e5ff',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }} />
+          <div style={{
+            fontFamily: 'Orbitron, sans-serif',
+            fontSize: '9px',
+            letterSpacing: '3px',
+            color: 'rgba(255,255,255,0.2)'
+          }}>
+            INIZIALIZZAZIONE SCENA XR
+          </div>
+        </div>
+      )}
 
       <Canvas
         shadows

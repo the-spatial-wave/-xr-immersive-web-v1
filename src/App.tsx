@@ -123,7 +123,7 @@ function App() {
       {mode === 'explore' && currentSceneId === 'scene4' && (
         <Scene4
           profile={quizProfile || 'navigator'}
-          onRestart={() => setScene('scene1')}
+          onRestart={() => setScene('scene2')}
           onBack={() => setScene('scene2')}
         />
       )}
