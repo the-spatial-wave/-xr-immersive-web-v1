@@ -7,10 +7,12 @@ import {
   PerspectiveCamera,
   ContactShadows,
   useGLTF,
+  Html,
+  Text,
 } from '@react-three/drei'
 import { XR } from '@react-three/xr'
 import type { XRStore } from '@react-three/xr'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import * as THREE from 'three'
 
 import LyraCharacter from '../lyra/LyraCharacter'
@@ -183,15 +185,141 @@ function useScene1AmbientAudio(enabled: boolean) {
   }, [enabled])
 }
 
+/* ============================================
+   CONTEXTUAL PANEL
+   ============================================ */
+function ContextPanel({ onNavigate }: { onNavigate?: (sceneNumber: number) => void }) {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 2800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <Html
+      position={[2.5, 2, -1]}
+      transform
+      distanceFactor={3}
+      style={{
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 0.8s ease-in',
+        pointerEvents: visible ? 'auto' : 'none'
+      }}
+    >
+      <div style={{
+        background: 'rgba(8, 12, 20, 0.90)',
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(0, 229, 255, 0.55)',
+        borderRadius: '12px',
+        padding: '24px',
+        maxWidth: '320px',
+        fontFamily: 'system-ui, sans-serif',
+        color: '#fff',
+        boxShadow: '0 8px 32px rgba(0, 217, 255, 0.15)'
+      }}>
+        {/* Title */}
+        <div style={{
+          fontSize: '18px',
+          fontWeight: '700',
+          color: '#00d9ff',
+          marginBottom: '16px',
+          letterSpacing: '0.5px',
+          lineHeight: '1.3'
+        }}>
+          QUESTA E UNA SCENA XR REALE
+        </div>
+
+        {/* Body */}
+        <div style={{
+          fontSize: '14px',
+          lineHeight: '1.6',
+          color: 'rgba(255,255,255,0.9)',
+          marginBottom: '16px'
+        }}>
+          Gira nel browser.<br/>
+          Nessuna app. Nessun visore.<br/><br/>
+          E il punto di partenza del percorso XR Reset:<br/>
+          uno spazio essenziale da comprendere,<br/>
+          modificare e pubblicare.
+        </div>
+
+        {/* Lista */}
+        <div style={{
+          fontSize: '13px',
+          color: 'rgba(255,255,255,0.8)',
+          marginBottom: '16px',
+          lineHeight: '1.8'
+        }}>
+          <div>&#10022; Luce</div>
+          <div>&#10022; Materia</div>
+          <div>&#10022; Atmosfera</div>
+        </div>
+
+        {/* Footer */}
+        <div style={{
+          fontSize: '11px',
+          color: 'rgba(255,255,255,0.5)',
+          marginBottom: '16px',
+          fontStyle: 'italic'
+        }}>
+          Scena base del percorso XR Reset
+        </div>
+
+        {/* CTA Button */}
+        <button
+          onClick={() => onNavigate?.(2)}
+          style={{
+            background: '#00E5FF',
+            border: 'none',
+            color: '#0B0F14',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            fontSize: '13px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            width: '100%',
+            letterSpacing: '0.5px'
+          }}
+        >
+          SCOPRI IL PERCORSO →
+        </button>
+      </div>
+    </Html>
+  )
+}
+
+/* ============================================
+   FLOOR TEXT
+   ============================================ */
+function FloorText() {
+  return (
+    <Text
+      position={[0, 0.52, 0]}
+      rotation={[-Math.PI / 2, 0, 0]}
+      fontSize={0.3}
+      color="#00d9ff"
+      anchorX="center"
+      anchorY="middle"
+      letterSpacing={0.1}
+    >
+      YOUR SPACE
+      <meshBasicMaterial transparent opacity={0.15} color="#00d9ff" />
+    </Text>
+  )
+}
+
 /**
  * Scene1Content
  */
 function Scene1Content({
   platformHeight,
   lyraHeightOffset,
+  onNavigate,
 }: {
   platformHeight: number
   lyraHeightOffset: number
+  onNavigate?: (sceneNumber: number) => void
 }) {
   return (
     <>
@@ -208,6 +336,12 @@ function Scene1Content({
       </Suspense>
 
       <Scene1Ground />
+
+      {/* Floor Text */}
+      <FloorText />
+
+      {/* Contextual Panel */}
+      <ContextPanel onNavigate={onNavigate} />
 
       <ContactShadows
         position={[0, 0.505, 0]}
@@ -286,12 +420,14 @@ export default function Scene1(props: Scene1Props) {
             <Scene1Content
               platformHeight={platformHeight}
               lyraHeightOffset={lyraHeightOffset}
+              onNavigate={props.onNavigate}
             />
           </XR>
         ) : (
           <Scene1Content
             platformHeight={platformHeight}
             lyraHeightOffset={lyraHeightOffset}
+            onNavigate={props.onNavigate}
           />
         )}
       </Canvas>
