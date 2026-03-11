@@ -309,6 +309,80 @@ function FloorText() {
   )
 }
 
+/* ============================================
+   MOBILE HUD - Fixed 2D overlay
+   ============================================ */
+function MobileHUD({ onNavigate }: { onNavigate?: (sceneNumber: number) => void }) {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 2800)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom: '80px',
+      left: '16px',
+      right: '16px',
+      background: 'rgba(11, 15, 20, 0.85)',
+      border: '1px solid rgba(0, 229, 255, 0.22)',
+      borderRadius: '14px',
+      padding: '14px 18px',
+      backdropFilter: 'blur(18px)',
+      zIndex: 50,
+      fontFamily: 'Manrope, sans-serif',
+      opacity: visible ? 1 : 0,
+      transition: 'opacity 0.8s ease',
+      pointerEvents: visible ? 'auto' : 'none'
+    }}>
+      {/* Tag */}
+      <div style={{
+        fontSize: '9px',
+        color: '#00d9ff',
+        textTransform: 'uppercase',
+        letterSpacing: '2px',
+        marginBottom: '8px',
+        fontWeight: '600'
+      }}>
+        SCENA XR REALE
+      </div>
+
+      {/* Title */}
+      <div style={{
+        fontSize: '13px',
+        fontWeight: '700',
+        color: '#E8ECF0',
+        marginBottom: '12px',
+        lineHeight: '1.4'
+      }}>
+        Questa scena gira nel browser.
+      </div>
+
+      {/* CTA Button */}
+      <button
+        onClick={() => onNavigate?.(2)}
+        style={{
+          background: 'linear-gradient(135deg, #00d9ff, #ff2fd6)',
+          border: 'none',
+          color: '#0B0F14',
+          padding: '10px 16px',
+          borderRadius: '7px',
+          fontSize: '11px',
+          fontWeight: '800',
+          cursor: 'pointer',
+          width: '100%',
+          letterSpacing: '0.5px',
+          textTransform: 'uppercase'
+        }}
+      >
+        SCOPRI IL PERCORSO →
+      </button>
+    </div>
+  )
+}
+
 /**
  * Scene1Content
  */
@@ -316,10 +390,12 @@ function Scene1Content({
   platformHeight,
   lyraHeightOffset,
   onNavigate,
+  isMobile,
 }: {
   platformHeight: number
   lyraHeightOffset: number
   onNavigate?: (sceneNumber: number) => void
+  isMobile: boolean
 }) {
   return (
     <>
@@ -340,8 +416,8 @@ function Scene1Content({
       {/* Floor Text */}
       <FloorText />
 
-      {/* Contextual Panel */}
-      <ContextPanel onNavigate={onNavigate} />
+      {/* Contextual Panel - Desktop only */}
+      {!isMobile && <ContextPanel onNavigate={onNavigate} />}
 
       <ContactShadows
         position={[0, 0.505, 0]}
@@ -374,6 +450,7 @@ export default function Scene1(props: Scene1Props) {
   const platformHeight = 0.5
   const lyraHeightOffset = 0.22
   const vrEnabled = props.vrEnabled ?? false
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
 
   useScene1AmbientAudio(mode === 'explore' || mode === 'xr')
 
@@ -421,6 +498,7 @@ export default function Scene1(props: Scene1Props) {
               platformHeight={platformHeight}
               lyraHeightOffset={lyraHeightOffset}
               onNavigate={props.onNavigate}
+              isMobile={isMobile}
             />
           </XR>
         ) : (
@@ -428,9 +506,13 @@ export default function Scene1(props: Scene1Props) {
             platformHeight={platformHeight}
             lyraHeightOffset={lyraHeightOffset}
             onNavigate={props.onNavigate}
+            isMobile={isMobile}
           />
         )}
       </Canvas>
+
+      {/* Mobile HUD - Fixed 2D overlay */}
+      {isMobile && <MobileHUD onNavigate={props.onNavigate} />}
 
       {/* Firma */}
       <div style={{
