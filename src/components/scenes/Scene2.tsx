@@ -832,13 +832,19 @@ export default function Scene2(props: Scene2Props) {
   // Audio state from store
   const voiceOverPlayed = useAppStore(s => s.voiceOverPlayed)
   const setVoiceOverPlayed = useAppStore(s => s.setVoiceOverPlayed)
-
-  // Audio ref for cleanup on unmount
-  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const setScene2AudioRef = useAppStore(s => s.setScene2AudioRef)
+  const scene2AudioRef = useAppStore(s => s.scene2AudioRef)
 
   // Handler per Quiz Panel
   const handleStartQuiz = () => {
     console.log('🎮 Starting Quiz...')
+
+    // Stop audio immediately before navigating
+    if (scene2AudioRef) {
+      scene2AudioRef.pause()
+      scene2AudioRef.currentTime = 0
+      console.log('🔇 Scene2 audio stopped (quiz navigation)')
+    }
 
     if (onNavigate) {
       onNavigate(3)  // Navigate to Scene 3
@@ -861,7 +867,7 @@ export default function Scene2(props: Scene2Props) {
           const audio = new Audio('/audio/lyra-embrace.mp3')
           audio.loop = false
           audio.volume = 0.4
-          audioRef.current = audio
+          setScene2AudioRef(audio)
           audio.play().catch(err => {
             console.log('🔇 Voice over not available:', err.message)
           })
@@ -891,15 +897,16 @@ export default function Scene2(props: Scene2Props) {
       clearTimeout(quizTimer)
 
       // Cleanup audio on unmount
-      if (audioRef.current) {
-        audioRef.current.pause()
-        audioRef.current.currentTime = 0
-        audioRef.current.src = ''
-        audioRef.current = null
+      const audioRef = useAppStore.getState().scene2AudioRef
+      if (audioRef) {
+        audioRef.pause()
+        audioRef.currentTime = 0
+        audioRef.src = ''
+        setScene2AudioRef(null)
         console.log('🔇 Scene2 voice over stopped (unmount)')
       }
     }
-  }, [vrEnabled])
+  }, [vrEnabled, setScene2AudioRef])
   
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -921,21 +928,6 @@ export default function Scene2(props: Scene2Props) {
           to   { transform: rotate(360deg); }
         }
       `}</style>
-
-      {/* Scene Label */}
-      <div style={{
-        position: 'absolute',
-        top: 20,
-        left: 20,
-        zIndex: 100,
-        color: 'rgba(255,255,255,0.7)',
-        fontFamily: 'monospace',
-        fontSize: '12px',
-        textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
-        letterSpacing: '2px'
-      }}>
-        <div>LYRA HUB</div>
-      </div>
 
       {/* PROFILO XR Overlay - HTML2D (responsive) */}
       <div style={{

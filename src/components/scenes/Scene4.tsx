@@ -243,6 +243,35 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
         >
           ← Torna alla gallery
         </div>
+
+        {/* Footer con firma */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          padding: '24px 20px 32px',
+          borderTop: '1px solid rgba(255,255,255,0.04)',
+          marginTop: '32px'
+        }}>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{
+              fontFamily: 'Orbitron, sans-serif',
+              fontSize: '13px',
+              fontWeight: 600,
+              color: '#C8CCD6',
+              marginBottom: '4px'
+            }}>
+              Lyra Hub
+            </div>
+            <div style={{
+              fontFamily: 'Manrope, sans-serif',
+              fontSize: '10px',
+              color: 'rgba(183,192,204,0.4)',
+              letterSpacing: '1px'
+            }}>
+              An experience by The Spatial Wave
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

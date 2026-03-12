@@ -190,11 +190,17 @@ function useScene1AmbientAudio(enabled: boolean) {
    ============================================ */
 function ContextPanel({ onNavigate }: { onNavigate?: (sceneNumber: number) => void }) {
   const [visible, setVisible] = useState(false)
+  const resetVoiceOver = useAppStore(s => s.resetVoiceOver)
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 2800)
     return () => clearTimeout(timer)
   }, [])
+
+  const handleNavigateToScene2 = () => {
+    resetVoiceOver()
+    onNavigate?.(2)
+  }
 
   return (
     <Html
@@ -268,7 +274,7 @@ function ContextPanel({ onNavigate }: { onNavigate?: (sceneNumber: number) => vo
 
         {/* CTA Button */}
         <button
-          onClick={() => onNavigate?.(2)}
+          onClick={handleNavigateToScene2}
           style={{
             background: '#00E5FF',
             border: 'none',
@@ -314,11 +320,17 @@ function FloorText() {
    ============================================ */
 function MobileHUD({ onNavigate }: { onNavigate?: (sceneNumber: number) => void }) {
   const [visible, setVisible] = useState(false)
+  const resetVoiceOver = useAppStore(s => s.resetVoiceOver)
 
   useEffect(() => {
     const timer = setTimeout(() => setVisible(true), 2800)
     return () => clearTimeout(timer)
   }, [])
+
+  const handleNavigateToScene2 = () => {
+    resetVoiceOver()
+    onNavigate?.(2)
+  }
 
   return (
     <div style={{
@@ -366,7 +378,7 @@ function MobileHUD({ onNavigate }: { onNavigate?: (sceneNumber: number) => void 
 
       {/* CTA Button */}
       <button
-        onClick={() => onNavigate?.(2)}
+        onClick={handleNavigateToScene2}
         style={{
           background: 'linear-gradient(135deg, #00d9ff, #ff2fd6)',
           border: 'none',
