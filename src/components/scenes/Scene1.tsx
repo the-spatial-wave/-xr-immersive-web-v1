@@ -316,14 +316,14 @@ function FloorText() {
 }
 
 /* ============================================
-   MOBILE HUD - Fixed 2D overlay
+   MOBILE HUD - Fixed 2D overlay with close/reopen
    ============================================ */
 function MobileHUD({ onNavigate }: { onNavigate?: (sceneNumber: number) => void }) {
-  const [visible, setVisible] = useState(false)
+  const [panelOpen, setPanelOpen] = useState(false)
   const resetVoiceOver = useAppStore(s => s.resetVoiceOver)
 
   useEffect(() => {
-    const timer = setTimeout(() => setVisible(true), 2800)
+    const timer = setTimeout(() => setPanelOpen(true), 2800)
     return () => clearTimeout(timer)
   }, [])
 
@@ -333,69 +333,121 @@ function MobileHUD({ onNavigate }: { onNavigate?: (sceneNumber: number) => void 
   }
 
   return (
-    <div style={{
-      position: 'fixed',
-      bottom: '80px',
-      left: '16px',
-      right: '16px',
-      background: 'rgba(11, 15, 20, 0.85)',
-      border: '1px solid rgba(0, 229, 255, 0.22)',
-      borderRadius: '14px',
-      padding: '14px 18px',
-      backdropFilter: 'blur(18px)',
-      zIndex: 50,
-      fontFamily: 'Manrope, sans-serif',
-      opacity: visible ? 1 : 0,
-      transition: 'opacity 0.8s ease',
-      pointerEvents: visible ? 'auto' : 'none'
-    }}>
-      {/* Tag */}
+    <>
+      {/* Main Panel */}
       <div style={{
-        fontSize: '9px',
-        color: '#00d9ff',
-        textTransform: 'uppercase',
-        letterSpacing: '2px',
-        marginBottom: '8px',
-        fontWeight: '600'
+        position: 'fixed',
+        bottom: '80px',
+        left: '16px',
+        right: '16px',
+        background: 'rgba(11, 15, 20, 0.85)',
+        border: '1px solid rgba(0, 229, 255, 0.22)',
+        borderRadius: '14px',
+        padding: '14px 18px',
+        backdropFilter: 'blur(18px)',
+        zIndex: 50,
+        fontFamily: 'Manrope, sans-serif',
+        opacity: panelOpen ? 1 : 0,
+        transform: panelOpen ? 'translateY(0)' : 'translateY(20px)',
+        transition: 'opacity 0.5s ease, transform 0.5s ease',
+        pointerEvents: panelOpen ? 'auto' : 'none'
       }}>
-        SCENA XR IMMERSIVA
+        {/* Close Button X */}
+        <button
+          onClick={() => setPanelOpen(false)}
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '12px',
+            fontSize: '16px',
+            color: 'rgba(0, 229, 255, 0.5)',
+            cursor: 'pointer',
+            background: 'none',
+            border: 'none',
+            padding: '4px 8px',
+            lineHeight: 1
+          }}
+        >
+          ×
+        </button>
+
+        {/* Tag */}
+        <div style={{
+          fontSize: '9px',
+          color: '#00d9ff',
+          textTransform: 'uppercase',
+          letterSpacing: '2px',
+          marginBottom: '8px',
+          fontWeight: '600'
+        }}>
+          SCENA XR IMMERSIVA
+        </div>
+
+        {/* Body Text */}
+        <div style={{
+          fontSize: '12px',
+          fontWeight: '400',
+          color: '#E8ECF0',
+          marginBottom: '12px',
+          lineHeight: '1.5'
+        }}>
+          Questa non e un video.
+          E uno spazio 3D reale che vive nel tuo browser.
+          <br/><br/>
+          Muoviti nella scena, esplora e scopri
+          come creare la tua esperienza XR.
+        </div>
+
+        {/* CTA Button */}
+        <button
+          onClick={handleNavigateToScene2}
+          style={{
+            background: 'linear-gradient(135deg, #00d9ff, #ff2fd6)',
+            border: 'none',
+            color: '#0B0F14',
+            padding: '10px 16px',
+            borderRadius: '7px',
+            fontSize: '11px',
+            fontWeight: '800',
+            cursor: 'pointer',
+            width: '100%',
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase'
+          }}
+        >
+          ENTRA NEL PERCORSO →
+        </button>
       </div>
 
-      {/* Body Text */}
-      <div style={{
-        fontSize: '12px',
-        fontWeight: '400',
-        color: '#E8ECF0',
-        marginBottom: '12px',
-        lineHeight: '1.5'
-      }}>
-        Questa non e un video.
-        E uno spazio 3D reale che vive nel tuo browser.
-        <br/><br/>
-        Muoviti nella scena, esplora e scopri
-        come creare la tua esperienza XR.
-      </div>
-
-      {/* CTA Button */}
-      <button
-        onClick={handleNavigateToScene2}
-        style={{
-          background: 'linear-gradient(135deg, #00d9ff, #ff2fd6)',
-          border: 'none',
-          color: '#0B0F14',
-          padding: '10px 16px',
-          borderRadius: '7px',
-          fontSize: '11px',
-          fontWeight: '800',
-          cursor: 'pointer',
-          width: '100%',
-          letterSpacing: '0.5px',
-          textTransform: 'uppercase'
-        }}
-      >
-        ENTRA NEL PERCORSO →
-      </button>
-    </div>
+      {/* Reopen Pill - visible only when panel closed */}
+      {!panelOpen && (
+        <button
+          onClick={() => setPanelOpen(true)}
+          style={{
+            position: 'fixed',
+            bottom: '24px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(11, 15, 20, 0.85)',
+            border: '1px solid rgba(0, 229, 255, 0.3)',
+            borderRadius: '20px',
+            padding: '8px 20px',
+            fontFamily: 'Manrope, sans-serif',
+            fontSize: '11px',
+            fontWeight: '700',
+            letterSpacing: '1.5px',
+            color: '#00E5FF',
+            cursor: 'pointer',
+            zIndex: 50,
+            opacity: 1,
+            transition: 'opacity 0.3s ease',
+            backdropFilter: 'blur(10px)'
+          }}
+        >
+          SCOPRI IL PERCORSO +
+        </button>
+      )}
+    </>
   )
 }
 
