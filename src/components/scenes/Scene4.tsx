@@ -1,5 +1,7 @@
 // Scene 4 - Profile Results & CTA
 
+import { useMemo } from 'react'
+
 interface Scene4Props {
   profile: 'navigator' | 'architect' | 'alchemist'
   onRestart: () => void
@@ -29,6 +31,7 @@ const profileData = {
 
 export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
   const data = profileData[profile]
+  const isMobile = useMemo(() => window.innerWidth < 768, [])
 
   return (
     <div
@@ -39,6 +42,7 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
         alignItems: 'center',
         justifyContent: 'center',
         background: 'radial-gradient(ellipse at center, #1e1b4b 0%, #0a0118 100%)',
+        overflowY: 'auto',
       }}
     >
       {/* Pannello centrale */}
@@ -48,24 +52,25 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
           backdropFilter: 'blur(20px)',
           border: `1px solid ${data.color}4D`,
           borderRadius: '16px',
-          padding: '40px',
-          paddingBottom: '60px',
+          padding: isMobile ? '24px' : '40px',
+          paddingBottom: isMobile ? '36px' : '60px',
           maxWidth: '520px',
           width: '90%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           textAlign: 'center',
+          margin: isMobile ? '20px auto' : '0 auto',
         }}
       >
         {/* 1. Label */}
         <div
           style={{
-            fontSize: '10px',
-            letterSpacing: '3px',
+            fontSize: isMobile ? '9px' : '10px',
+            letterSpacing: isMobile ? '2px' : '3px',
             color: 'rgba(255,255,255,0.4)',
             textTransform: 'uppercase',
-            marginBottom: '8px',
+            marginBottom: isMobile ? '6px' : '8px',
           }}
         >
           IL TUO PROFILO XR
@@ -74,10 +79,10 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
         {/* 2. Titolo profilo */}
         <div
           style={{
-            fontSize: '48px',
+            fontSize: isMobile ? '36px' : '48px',
             fontWeight: 800,
             color: data.color,
-            marginBottom: '6px',
+            marginBottom: isMobile ? '4px' : '6px',
             lineHeight: 1,
           }}
         >
@@ -87,10 +92,10 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
         {/* 3. Tagline */}
         <div
           style={{
-            fontSize: '14px',
+            fontSize: isMobile ? '11px' : '14px',
             fontStyle: 'italic',
             color: 'rgba(255,255,255,0.6)',
-            marginBottom: '20px',
+            marginBottom: isMobile ? '12px' : '20px',
           }}
         >
           {data.tagline}
@@ -102,17 +107,17 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
             height: '1px',
             width: '100%',
             background: 'rgba(255,255,255,0.08)',
-            marginBottom: '20px',
+            marginBottom: isMobile ? '12px' : '20px',
           }}
         />
 
         {/* 5. Messaggio */}
         <div
           style={{
-            fontSize: '14px',
+            fontSize: isMobile ? '13px' : '14px',
             lineHeight: 1.7,
             color: 'rgba(255,255,255,0.8)',
-            marginBottom: '24px',
+            marginBottom: isMobile ? '14px' : '24px',
           }}
         >
           {data.message}
@@ -121,10 +126,10 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
         {/* Intro testo prima del bundle */}
         <div
           style={{
-            fontSize: '13px',
+            fontSize: isMobile ? '11px' : '13px',
             color: 'rgba(255,255,255,0.5)',
             textAlign: 'center',
-            marginBottom: '16px',
+            marginBottom: isMobile ? '10px' : '16px',
             lineHeight: 1.6
           }}
         >
@@ -138,20 +143,20 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
             background: 'rgba(255,255,255,0.03)',
             border: '1px solid rgba(255,255,255,0.08)',
             borderRadius: '10px',
-            padding: '20px',
+            padding: isMobile ? '14px' : '20px',
             width: '100%',
             textAlign: 'left',
-            marginBottom: '24px',
+            marginBottom: isMobile ? '14px' : '24px',
           }}
         >
           {/* Label bundle */}
           <div
             style={{
-              fontSize: '10px',
-              letterSpacing: '2px',
+              fontSize: isMobile ? '9px' : '10px',
+              letterSpacing: isMobile ? '1.5px' : '2px',
               color: 'rgba(255,255,255,0.35)',
               textTransform: 'uppercase',
-              marginBottom: '12px',
+              marginBottom: isMobile ? '8px' : '12px',
             }}
           >
             XR RESET BUNDLE
@@ -162,7 +167,7 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
             style={{
               display: 'flex',
               flexDirection: 'column',
-              gap: '8px',
+              gap: isMobile ? '6px' : '8px',
             }}
           >
             <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.75)' }}>
@@ -182,10 +187,10 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
           {/* Prezzo */}
           <div
             style={{
-              fontSize: '36px',
+              fontSize: isMobile ? '32px' : '36px',
               fontWeight: 800,
               color: data.color,
-              marginTop: '16px',
+              marginTop: isMobile ? '10px' : '16px',
               display: 'block',
             }}
           >
@@ -200,14 +205,14 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
             background: 'linear-gradient(135deg, #00d9ff, #ec4899)',
             color: '#000',
             fontWeight: 800,
-            fontSize: '14px',
+            fontSize: isMobile ? '13px' : '14px',
             letterSpacing: '1px',
-            padding: '16px 32px',
+            padding: isMobile ? '12px 24px' : '16px 32px',
             borderRadius: '8px',
             border: 'none',
             width: '100%',
             cursor: 'pointer',
-            marginBottom: '12px',
+            marginBottom: isMobile ? '8px' : '12px',
           }}
         >
           INIZIA XR RESET →
@@ -220,12 +225,12 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
             background: 'transparent',
             border: '1px solid rgba(255,255,255,0.15)',
             color: 'rgba(255,255,255,0.5)',
-            fontSize: '13px',
-            padding: '12px',
+            fontSize: isMobile ? '12px' : '13px',
+            padding: isMobile ? '10px' : '12px',
             borderRadius: '8px',
             width: '100%',
             cursor: 'pointer',
-            marginBottom: '12px',
+            marginBottom: isMobile ? '8px' : '12px',
           }}
         >
           ← Rifai il quiz
@@ -235,10 +240,10 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
         <div
           onClick={onBack}
           style={{
-            fontSize: '12px',
+            fontSize: isMobile ? '11px' : '12px',
             color: 'rgba(255,255,255,0.3)',
             cursor: 'pointer',
-            marginTop: '4px',
+            marginTop: isMobile ? '2px' : '4px',
           }}
         >
           ← Torna alla gallery
@@ -248,23 +253,23 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
         <div style={{
           display: 'flex',
           justifyContent: 'flex-end',
-          padding: '24px 20px 32px',
+          padding: isMobile ? '16px 12px 20px' : '24px 20px 32px',
           borderTop: '1px solid rgba(255,255,255,0.04)',
-          marginTop: '32px'
+          marginTop: isMobile ? '20px' : '32px'
         }}>
           <div style={{ textAlign: 'right' }}>
             <div style={{
               fontFamily: 'Orbitron, sans-serif',
-              fontSize: '13px',
+              fontSize: isMobile ? '11px' : '13px',
               fontWeight: 600,
               color: '#C8CCD6',
-              marginBottom: '4px'
+              marginBottom: isMobile ? '3px' : '4px'
             }}>
               Lyra Hub
             </div>
             <div style={{
               fontFamily: 'Manrope, sans-serif',
-              fontSize: '10px',
+              fontSize: isMobile ? '9px' : '10px',
               color: 'rgba(183,192,204,0.4)',
               letterSpacing: '1px'
             }}>
