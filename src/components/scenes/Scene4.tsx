@@ -200,7 +200,7 @@ export default function Scene4({ profile, onRestart, onBack }: Scene4Props) {
 
         {/* 7. Bottone CTA primario */}
         <button
-          onClick={() => window.open('https://www.skool.com/spatial-wave-6263', '_blank')}
+          onClick={() => window.open('https://www.skool.com/spatial-wave-6263/classroom', '_blank')}
           style={{
             background: 'linear-gradient(135deg, #00d9ff, #ec4899)',
             color: '#000',
